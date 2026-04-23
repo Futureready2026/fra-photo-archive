@@ -176,6 +176,37 @@ button,input,select,textarea{font-family:var(--font-b)}
 .prog-bg{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
 .prog-fill{height:100%;width:0%;background:var(--brand);transition:width .3s ease;border-radius:3px}
 .prog-text{font-family:var(--font-m);font-size:11px;color:var(--ink3);margin-top:7px}
+.student-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.student-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r2);padding:18px;display:flex;flex-direction:column;gap:14px}
+.student-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.student-title{font-family:var(--font-d);font-size:16px;font-weight:700;color:var(--ink)}
+.student-sub{font-family:var(--font-m);font-size:10px;letter-spacing:1px;color:var(--ink4)}
+.student-photo-box{border:1.5px dashed var(--border2);border-radius:12px;background:#fff;padding:14px;display:flex;flex-direction:column;gap:12px}
+.student-preview{width:100%;aspect-ratio:4/3;border-radius:10px;background:linear-gradient(135deg,var(--brand-xpale),var(--surface2));border:1px solid var(--border);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.student-preview img{width:100%;height:100%;object-fit:cover;display:block}
+.student-preview-empty{font-size:12px;color:var(--ink3);text-align:center;padding:0 18px;line-height:1.6}
+.student-photo-actions{display:flex;gap:10px;flex-wrap:wrap}
+.student-file-input{display:none}
+.student-file-label{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:8px;background:var(--brand-xpale);border:1.5px solid var(--brand-pale);color:var(--brand);font-size:13px;font-weight:600;cursor:pointer;transition:all var(--t)}
+.student-file-label:hover{background:#dbeafe;border-color:var(--brand-light)}
+.student-photo-name{font-size:11px;color:var(--ink3);line-height:1.5}
+.report-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+.report-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--sh);padding:20px;display:flex;flex-direction:column;gap:12px}
+.report-card-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.report-card-title{font-family:var(--font-d);font-size:18px;font-weight:700;color:var(--ink);line-height:1.2}
+.report-card-sub{font-size:12px;color:var(--ink3)}
+.report-tags{display:flex;flex-wrap:wrap;gap:6px}
+.report-body{font-size:14px;color:var(--ink2);line-height:1.8;white-space:pre-wrap}
+.report-students{display:flex;flex-direction:column;gap:8px;padding-top:10px;border-top:1px solid var(--border)}
+.report-student{padding:10px 12px;border-radius:10px;background:var(--surface2);font-size:13px;color:var(--ink2)}
+.report-student strong{font-family:var(--font-d);font-size:14px;color:var(--ink)}
+.report-actions{display:flex;gap:10px;flex-wrap:wrap;padding-top:8px}
+.filter-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.helper-note{font-size:12px;color:var(--ink3);line-height:1.7}
+.helper-note strong{color:var(--ink2)}
+.photo-card-summary{font-size:12px;color:var(--ink3);margin-bottom:8px;line-height:1.6}
+.lb-comment-block{margin-bottom:10px}
+.lb-comment-label{font-family:var(--font-m);font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.45);margin-bottom:4px}
 
 /* ALERTS - very visible */
 .alert{
@@ -229,7 +260,8 @@ button,input,select,textarea{font-family:var(--font-b)}
   .browse-hero,.gallery-wrap,.pick-bar,.filter-bar{padding-left:16px;padding-right:16px}
   .gallery-grid{grid-template-columns:1fr 1fr;gap:12px}
   .upload-page{padding:24px 14px 60px}.form-card{padding:18px}
-  .form-grid{grid-template-columns:1fr}.type-selector{grid-template-columns:1fr 1fr}
+  .form-grid,.student-grid,.filter-grid{grid-template-columns:1fr}.type-selector{grid-template-columns:1fr 1fr}
+  .report-grid,.gallery-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -268,6 +300,7 @@ button,input,select,textarea{font-family:var(--font-b)}
     <div class="nav-tabs">
       <button class="nav-tab active" id="nav-browse" onclick="switchPage('browse')">📸 Browse</button>
       <button class="nav-tab" id="nav-upload" onclick="switchPage('upload')">⬆ Upload</button>
+      <button class="nav-tab" id="nav-reports" onclick="switchPage('reports')">📝 Teacher Weekly Report</button>
     </div>
     <div class="nav-right">
       <span class="nav-user" id="nav-user-label">ADMIN</span>
@@ -279,8 +312,8 @@ button,input,select,textarea{font-family:var(--font-b)}
   <div class="page active" id="page-browse">
     <div class="browse-hero">
       <div class="hero-eyebrow">FRA · CLASS PHOTO ARCHIVE</div>
-      <div class="hero-title">Class <em>Photos</em></div>
-      <div class="hero-sub">Browse, view and share photos from all centers and lessons.</div>
+      <div class="hero-title">Student <em>Photos</em></div>
+      <div class="hero-sub">Browse student snapshots by class, teacher, lesson and level.</div>
     </div>
     <div class="pick-bar">
       <span class="pick-label">YEAR</span>
@@ -295,9 +328,11 @@ button,input,select,textarea{font-family:var(--font-b)}
         <option value="">All Types</option>
         <option>In-Centre</option><option>Pre-School</option><option>INT</option><option>OST</option>
       </select>
-      <select class="fsel" id="f-center" onchange="applyFilters()">
-        <option value="">All Centers</option>
-        <option>TPY</option><option>BDM</option><option>CBP</option><option>FDL</option>
+      <select class="fsel" id="f-class" onchange="applyFilters()">
+        <option value="">All Classes</option>
+      </select>
+      <select class="fsel" id="f-teacher" onchange="applyFilters()">
+        <option value="">All Teachers</option>
       </select>
       <select class="fsel" id="f-level" onchange="applyFilters()">
         <option value="">All Levels</option>
@@ -322,8 +357,8 @@ button,input,select,textarea{font-family:var(--font-b)}
   <!-- UPLOAD PAGE -->
   <div class="page" id="page-upload">
     <div class="upload-page">
-      <div class="upload-page-title">Upload Class Photos</div>
-      <div class="upload-page-sub">Select the type, fill in the details, then attach photos.</div>
+      <div class="upload-page-title">Upload Weekly Class Report</div>
+      <div class="upload-page-sub">Step 1 stays the same. Then add the class report and up to 5 student records.</div>
 
       <!-- BACKEND -->
       <div class="form-card">
@@ -343,8 +378,7 @@ button,input,select,textarea{font-family:var(--font-b)}
         </div>
         <div class="file-mode-note" id="file-mode-note" style="display:none">
           You opened this page with <code>file://</code>. Browsers do not reliably POST local-file uploads to Google Apps Script.
-          Use GitHub Pages or another normal static host instead. For local testing, use <code>http://127.0.0.1:8765/fra-test.html</code>
-          or double-click <code>start-fra-test.command</code>.
+          Use GitHub Pages or another normal static host instead. For local testing, use <code>http://127.0.0.1:8765/index.html</code>.
         </div>
       </div>
 
@@ -370,10 +404,14 @@ button,input,select,textarea{font-family:var(--font-b)}
         </div>
       </div>
 
-      <!-- DATE -->
+      <!-- CLASS INFO -->
       <div class="form-card">
-        <div class="form-card-title">📅 Step 2 — Date</div>
+        <div class="form-card-title">📅 Step 2 — Class Weekly Report</div>
         <div class="form-grid">
+          <div class="ff">
+            <label class="ff-label">CLASS <span class="ff-req">*</span></label>
+            <input class="ff-input" id="u-class" type="text" placeholder="e.g. Venus">
+          </div>
           <div class="ff">
             <label class="ff-label">YEAR <span class="ff-req">*</span></label>
             <select class="ff-select" id="u-year">
@@ -390,67 +428,38 @@ button,input,select,textarea{font-family:var(--font-b)}
               <option>September</option><option>October</option><option>November</option><option>December</option>
             </select>
           </div>
-        </div>
-      </div>
-
-      <!-- IN-CENTRE -->
-      <div class="form-card dyn-section" id="fields-incenter">
-        <div class="form-card-title">🏫 Step 3 — In-Centre Details</div>
-        <div class="form-grid">
-          <div class="ff"><label class="ff-label">STUDENT NAME <span class="ff-req">*</span></label><input class="ff-input" id="ic-name" type="text" placeholder="e.g. John Smith"></div>
-          <div class="ff"><label class="ff-label">LESSON NUMBER <span class="ff-req">*</span></label><input class="ff-input" id="ic-lesson" type="text" placeholder="e.g. Lesson 4"></div>
           <div class="ff">
             <label class="ff-label">LEVEL <span class="ff-req">*</span></label>
-            <select class="ff-select" id="ic-level"><option value="">Select level…</option><option>Level 1</option><option>Level 2</option><option>Level 3</option><option>Level 4</option><option>Level 5</option><option>Level 6</option><option>Level 7</option><option>Level 8</option></select>
+            <select class="ff-select" id="u-level">
+              <option value="">Select level…</option>
+              <option>Level 1</option><option>Level 2</option><option>Level 3</option><option>Level 4</option>
+              <option>Level 5</option><option>Level 6</option><option>Level 7</option><option>Level 8</option>
+            </select>
           </div>
-          <div class="ff full"><label class="ff-label">COMMENTS</label><textarea class="ff-textarea" id="ic-comments" placeholder="Notes about this class…"></textarea></div>
+          <div class="ff">
+            <label class="ff-label">LESSON NUMBER <span class="ff-req">*</span></label>
+            <input class="ff-input" id="u-lesson" type="text" placeholder="e.g. Lesson 14">
+          </div>
+          <div class="ff full">
+            <label class="ff-label">TEACHER NAME <span class="ff-req">*</span></label>
+            <input class="ff-input" id="u-teacher" type="text" placeholder="e.g. Marianne">
+          </div>
+          <div class="ff full">
+            <label class="ff-label">CLASS REPORT <span class="ff-req">*</span></label>
+            <textarea class="ff-textarea" id="u-class-report" placeholder="Write the teacher weekly report here…"></textarea>
+          </div>
         </div>
       </div>
 
-      <!-- PRE-SCHOOL -->
-      <div class="form-card dyn-section" id="fields-preschool">
-        <div class="form-card-title">🎒 Step 3 — Pre-School Details</div>
-        <div class="form-grid">
-          <div class="ff"><label class="ff-label">CENTER <span class="ff-req">*</span></label><select class="ff-select" id="ps-center"><option value="">Select center…</option><option>TPY</option><option>BDM</option><option>CBP</option><option>FDL</option></select></div>
-          <div class="ff"><label class="ff-label">STUDENT NAME <span class="ff-req">*</span></label><input class="ff-input" id="ps-name" type="text" placeholder="e.g. John Smith"></div>
-          <div class="ff"><label class="ff-label">LESSON NUMBER <span class="ff-req">*</span></label><input class="ff-input" id="ps-lesson" type="text" placeholder="e.g. Lesson 2"></div>
-          <div class="ff"><label class="ff-label">LEVEL <span class="ff-req">*</span></label><select class="ff-select" id="ps-level"><option value="">Select level…</option><option>Level 1</option><option>Level 2</option><option>Level 3</option><option>Level 4</option><option>Level 5</option><option>Level 6</option><option>Level 7</option><option>Level 8</option></select></div>
-          <div class="ff full"><label class="ff-label">COMMENTS</label><textarea class="ff-textarea" id="ps-comments" placeholder="Notes about this class…"></textarea></div>
-        </div>
-      </div>
-
-      <!-- INT -->
-      <div class="form-card dyn-section" id="fields-int">
-        <div class="form-card-title">🏢 Step 3 — INT School</div>
-        <div class="form-grid">
-          <div class="ff full"><label class="ff-label">SCHOOL <span class="ff-req">*</span></label><select class="ff-select" id="int-school"><option value="">Select school…</option><option>SJII</option><option>OWIS@Punggol</option><option>OWIS@Nanyang</option><option>XCL</option><option>AIS</option></select></div>
-        </div>
-        <p style="margin-top:12px;font-size:13px;color:var(--ink3)">📎 Just attach photos — no other details needed for INT.</p>
-      </div>
-
-      <!-- OST -->
-      <div class="form-card dyn-section" id="fields-ost">
-        <div class="form-card-title">🌟 Step 3 — OST Activity</div>
-        <div class="form-grid">
-          <div class="ff full"><label class="ff-label">ACTIVITY NAME <span class="ff-req">*</span></label><input class="ff-input" id="ost-activity" type="text" placeholder="e.g. Sports Day, Field Trip to Zoo…"></div>
-        </div>
-      </div>
-
-      <!-- PHOTOS -->
       <div class="form-card">
         <div class="form-card-title">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-          Step 4 — Photos <span class="ff-req">*</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Step 3 — Student Records
         </div>
-        <div class="drop-zone" id="drop-zone">
-          <input type="file" id="photo-input" multiple accept="image/*" onchange="handlePhotoSelect(this.files)">
-          <div class="drop-icon">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          </div>
-          <div class="drop-title">Click or drag &amp; drop photos here</div>
-          <div class="drop-hint">JPG, PNG, WEBP · Multiple files supported</div>
+        <div class="helper-note" style="margin-bottom:16px">
+          Add up to <strong>5 students</strong>. Students 1-3 include comment boxes. Students 4-5 can be photo-only if you prefer.
         </div>
-        <div class="preview-strip" id="preview-strip"></div>
+        <div class="student-grid" id="student-slots"></div>
       </div>
 
       <!-- SUBMIT -->
@@ -458,16 +467,81 @@ button,input,select,textarea{font-family:var(--font-b)}
         <div class="submit-row">
           <button class="btn-primary" id="submit-btn" onclick="submitUpload()">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-            <span id="submit-text">Upload to Archive</span>
+            <span id="submit-text">Upload Weekly Report</span>
             <span class="spin hidden" id="submit-spin"></span>
           </button>
-          <div class="submit-note">Photos saved to Google Drive.<br>Visible in Browse immediately after upload.</div>
+          <div class="submit-note">Each student photo becomes one student record.<br>The teacher weekly report is grouped automatically.</div>
         </div>
         <div class="prog-wrap" id="prog-wrap">
           <div class="prog-bg"><div class="prog-fill" id="prog-fill"></div></div>
           <div class="prog-text" id="prog-text">Uploading…</div>
         </div>
         <div class="alert" id="upload-alert"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORT PAGE -->
+  <div class="page" id="page-reports">
+    <div class="upload-page">
+      <div class="upload-page-title">Teacher Weekly Report</div>
+      <div class="upload-page-sub">Find class reports by class, teacher, month, type and level.</div>
+
+      <div class="form-card">
+        <div class="form-card-title">🔎 Filter Teacher Reports</div>
+        <div class="filter-grid">
+          <div class="ff">
+            <label class="ff-label">TYPE</label>
+            <select class="ff-select" id="r-type" onchange="renderReports()">
+              <option value="">All Types</option>
+              <option>In-Centre</option><option>Pre-School</option><option>INT</option><option>OST</option>
+            </select>
+          </div>
+          <div class="ff">
+            <label class="ff-label">YEAR</label>
+            <select class="ff-select" id="r-year" onchange="renderReports()">
+              <option value="">All Years</option>
+              <option>2026</option><option>2027</option><option>2028</option><option>2029</option><option>2030</option>
+            </select>
+          </div>
+          <div class="ff">
+            <label class="ff-label">MONTH</label>
+            <select class="ff-select" id="r-month" onchange="renderReports()">
+              <option value="">All Months</option>
+              <option>January</option><option>February</option><option>March</option><option>April</option>
+              <option>May</option><option>June</option><option>July</option><option>August</option>
+              <option>September</option><option>October</option><option>November</option><option>December</option>
+            </select>
+          </div>
+          <div class="ff">
+            <label class="ff-label">CLASS</label>
+            <select class="ff-select" id="r-class" onchange="renderReports()">
+              <option value="">All Classes</option>
+            </select>
+          </div>
+          <div class="ff">
+            <label class="ff-label">TEACHER</label>
+            <select class="ff-select" id="r-teacher" onchange="renderReports()">
+              <option value="">All Teachers</option>
+            </select>
+          </div>
+          <div class="ff">
+            <label class="ff-label">LEVEL</label>
+            <select class="ff-select" id="r-level" onchange="renderReports()">
+              <option value="">All Levels</option>
+              <option>Level 1</option><option>Level 2</option><option>Level 3</option><option>Level 4</option>
+              <option>Level 5</option><option>Level 6</option><option>Level 7</option><option>Level 8</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="gallery-count" id="report-count">— weekly reports</div>
+      <div class="report-grid" id="report-grid"></div>
+      <div class="empty-state hidden" id="report-empty">
+        <div class="empty-icon">📝</div>
+        <div class="empty-title">No teacher reports found</div>
+        <div class="empty-sub">Once weekly reports are uploaded, they will appear here grouped by class.</div>
       </div>
     </div>
   </div>
@@ -515,20 +589,134 @@ const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzpzVXPF-aRo
 const SCRIPT_URL_STORAGE_KEY = 'fra_script_url_v5';
 const YEARS = ['2026','2027','2028','2029','2030'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-const TYPE_IDS = {'In-Centre':'incenter','Pre-School':'preschool','INT':'int','OST':'ost'};
+const LEVELS = ['Level 1','Level 2','Level 3','Level 4','Level 5','Level 6','Level 7','Level 8'];
+const STUDENT_SLOT_CONFIG = [
+  { index:1, comments:true },
+  { index:2, comments:true },
+  { index:3, comments:true },
+  { index:4, comments:false },
+  { index:5, comments:false }
+];
 
 let state = { year:'', month:'' };
 let SCRIPT_URL = getInitialScriptUrl();
 let allEntries = [];
-let selectedFiles = [];
+let reportGroupsCache = [];
 let currentType = '';
 let currentEntry = null;
 let currentLightboxEntry = null;
 let archiveSheetReadyPromise = null;
 let currentLightboxOpenUrl = '';
+let currentStudentFiles = STUDENT_SLOT_CONFIG.map(() => null);
+let currentStudentPreviewUrls = STUDENT_SLOT_CONFIG.map(() => '');
 
 // ── HELPERS ───────────────────────────────────────────────────
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function slug(s){ return String(s||'').trim().replace(/[^\w.-]+/g,'_').replace(/^_+|_+$/g,'').slice(0,48) || 'item'; }
+function maybeJson(text) {
+  const raw = String(text || '').trim();
+  if (!raw || raw[0] !== '{') return {};
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : {};
+  } catch (_) {
+    return {};
+  }
+}
+function uniqueValues(values) {
+  return [...new Set(values.filter(Boolean).map(v => String(v).trim()).filter(Boolean))]
+    .sort((a,b) => a.localeCompare(b, undefined, { numeric:true, sensitivity:'base' }));
+}
+function setSelectOptions(id, placeholder, values) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const current = el.value;
+  el.innerHTML = [`<option value="">${esc(placeholder)}</option>`]
+    .concat(values.map(v => `<option value="${esc(v)}">${esc(v)}</option>`))
+    .join('');
+  if (values.includes(current)) el.value = current;
+}
+function byNewest(a, b) {
+  return (b.timestampMs || 0) - (a.timestampMs || 0);
+}
+function buildWeeklyMeta(entryLike) {
+  return JSON.stringify({
+    schema: 'fra-weekly-report-v1',
+    reportId: entryLike.reportId || entryLike.meta?.reportId || '',
+    className: entryLike.className || entryLike.center || '',
+    teacherName: entryLike.teacherName || entryLike.school || '',
+    classReport: entryLike.classReport || '',
+    studentIndex: entryLike.studentIndex || entryLike.meta?.studentIndex || '',
+    createdAt: entryLike.meta?.createdAt || entryLike.timestamp || new Date().toISOString()
+  });
+}
+function normalizeEntry(entry) {
+  const meta = maybeJson(entry.activity);
+  const explicitReportId = entry.reportId || '';
+  const explicitClassName = entry.className || '';
+  const explicitTeacherName = entry.teacherName || '';
+  const explicitClassReport = entry.classReport || '';
+  const explicitStudentIndex = entry.studentIndex || '';
+  const explicitStudentName = entry.studentName || '';
+  const explicitStudentComments = entry.studentComments || '';
+  const isWeekly =
+    meta.schema === 'fra-weekly-report-v1' ||
+    !!meta.reportId ||
+    !!meta.classReport ||
+    !!explicitReportId ||
+    !!explicitClassName ||
+    !!explicitTeacherName ||
+    !!explicitClassReport ||
+    !!explicitStudentIndex;
+  const className = isWeekly
+    ? (explicitClassName || meta.className || entry.center || '')
+    : (entry.type === 'Pre-School' ? (entry.center || '') : entry.type === 'INT' ? (entry.school || '') : entry.type === 'OST' ? (entry.activity || '') : (entry.center || ''));
+  const teacherName = isWeekly ? (explicitTeacherName || meta.teacherName || entry.school || '') : '';
+  const classReport = isWeekly ? (explicitClassReport || meta.classReport || '') : '';
+  const reportId = isWeekly ? (explicitReportId || meta.reportId || '') : '';
+  const studentIndex = Number(isWeekly ? (explicitStudentIndex || meta.studentIndex || 0) : 0) || 0;
+  return {
+    ...entry,
+    meta,
+    isWeekly,
+    className,
+    teacherName,
+    classReport,
+    reportId,
+    studentIndex,
+    studentName: explicitStudentName || entry.name || '',
+    studentComments: explicitStudentComments || entry.comments || '',
+    lessonNumber: entry.lesson || '',
+    timestampMs: Date.parse(entry.timestamp || '') || 0
+  };
+}
+function normalizeEntries(rows) {
+  return rows.map(normalizeEntry).sort(byNewest);
+}
+function getReportKey(entry) {
+  return entry.reportId || [
+    entry.type || '',
+    entry.year || '',
+    entry.month || '',
+    entry.className || '',
+    entry.teacherName || '',
+    entry.lessonNumber || '',
+    entry.level || '',
+    entry.classReport || ''
+  ].join('||');
+}
+function getDisplayTitle(entry) {
+  return entry.studentName || entry.className || entry.school || entry.activity || 'Archive record';
+}
+function getEntryTitle(entry) {
+  if (!entry) return 'this record';
+  if (entry.isWeekly) return [entry.studentName, entry.className, entry.lessonNumber].filter(Boolean).join(' · ') || 'Student record';
+  if (entry.type === 'In-Centre') return [entry.name, entry.lesson, entry.level].filter(Boolean).join(' · ') || 'In-Centre record';
+  if (entry.type === 'Pre-School') return [entry.center, entry.name, entry.lesson, entry.level].filter(Boolean).join(' · ') || 'Pre-School record';
+  if (entry.type === 'INT') return entry.school || 'INT record';
+  if (entry.type === 'OST') return entry.activity || 'OST activity';
+  return entry.name || entry.activity || entry.school || entry.className || 'this record';
+}
 
 function showAlert(id, type, msg) {
   const el = document.getElementById(id);
@@ -545,15 +733,6 @@ function hideAlert(id) {
   const el = document.getElementById(id);
   el.className = 'alert';
   el.innerHTML = '';
-}
-
-function getEntryTitle(entry) {
-  if (!entry) return 'this record';
-  if (entry.type === 'In-Centre') return [entry.name, entry.lesson, entry.level].filter(Boolean).join(' · ') || 'In-Centre record';
-  if (entry.type === 'Pre-School') return [entry.center, entry.name, entry.lesson, entry.level].filter(Boolean).join(' · ') || 'Pre-School record';
-  if (entry.type === 'INT') return entry.school || 'INT record';
-  if (entry.type === 'OST') return entry.activity || 'OST activity';
-  return entry.name || entry.activity || entry.school || 'this record';
 }
 
 function isFileOrigin() {
@@ -733,7 +912,7 @@ async function postScriptPayload(payload) {
   };
 
   if (isFileOrigin()) {
-    throw new Error('This page was opened via file://. Please use http://127.0.0.1:8765/fra-test.html or double-click start-fra-test.command before uploading.');
+    throw new Error('This page was opened via file://. Please use http://127.0.0.1:8765/index.html or another normal http/https host before uploading.');
   }
 
   try {
@@ -818,20 +997,6 @@ function toBase64(file) {
   });
 }
 
-function buildFilename(payload, file, idx, total) {
-  // Build: Year_Month_Type_Center/School_Name_Lesson_Level[_N].ext
-  const parts = [payload.year, payload.month, payload.type];
-  if (payload.center) parts.push(payload.center);
-  if (payload.school) parts.push(payload.school.replace(/[@\s]/g,'_'));
-  if (payload.name)   parts.push(payload.name.trim().replace(/\s+/g,'_'));
-  if (payload.lesson) parts.push(payload.lesson.trim().replace(/\s+/g,'_'));
-  if (payload.level)  parts.push(payload.level.replace(/\s+/g,'_'));
-  if (payload.activity) parts.push(payload.activity.trim().replace(/\s+/g,'_').substring(0,20));
-  const ext = (file.type.split('/')[1] || 'jpg').replace('jpeg','jpg');
-  const suffix = total > 1 ? `_${idx+1}` : '';
-  return parts.join('_') + suffix + '.' + ext;
-}
-
 // ── LOGIN ─────────────────────────────────────────────────────
 function doLogin() {
   const u = document.getElementById('l-user').value.trim();
@@ -886,6 +1051,7 @@ function switchPage(name) {
   document.getElementById('page-'+name).classList.add('active');
   document.getElementById('nav-'+name).classList.add('active');
   if (name==='browse') loadEntries();
+  if (name==='reports') renderReports();
   if (name==='upload') hideAlert('upload-alert');
 }
 
@@ -893,48 +1059,82 @@ function switchPage(name) {
 function selectType(t) {
   currentType = t;
   document.querySelectorAll('.type-opt').forEach(el => el.classList.remove('selected'));
-  document.getElementById('t-'+TYPE_IDS[t]).classList.add('selected');
-  document.querySelectorAll('.dyn-section').forEach(el => el.classList.remove('show'));
-  document.getElementById('fields-'+TYPE_IDS[t]).classList.add('show');
+  const id = t === 'In-Centre' ? 't-incenter' : t === 'Pre-School' ? 't-preschool' : t === 'INT' ? 't-int' : 't-ost';
+  document.getElementById(id).classList.add('selected');
   hideAlert('upload-alert');
 }
 
-// ── PHOTO SELECTION ───────────────────────────────────────────
-const dropZone = document.getElementById('drop-zone');
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('drag-over'); addFiles(e.dataTransfer.files); });
-function handlePhotoSelect(files) { addFiles(files); }
+// ── STUDENT SLOT UI ───────────────────────────────────────────
+function renderStudentSlots() {
+  const host = document.getElementById('student-slots');
+  host.innerHTML = STUDENT_SLOT_CONFIG.map(slot => `
+    <div class="student-card">
+      <div class="student-head">
+        <div>
+          <div class="student-title">Student ${slot.index}</div>
+          <div class="student-sub">${slot.comments ? 'Name + picture + comments' : 'Name + picture'}</div>
+        </div>
+      </div>
+      <div class="ff">
+        <label class="ff-label">NAME</label>
+        <input class="ff-input" id="student-name-${slot.index}" type="text" placeholder="Enter student name">
+      </div>
+      ${slot.comments ? `
+      <div class="ff">
+        <label class="ff-label">COMMENTS</label>
+        <textarea class="ff-textarea" id="student-comments-${slot.index}" placeholder="Short note about this student…"></textarea>
+      </div>` : ''}
+      <div class="student-photo-box">
+        <div class="student-preview" id="student-preview-${slot.index}">
+          <div class="student-preview-empty">No picture selected yet.</div>
+        </div>
+        <div class="student-photo-actions">
+          <label class="student-file-label" for="student-photo-${slot.index}">Choose Picture</label>
+          <input class="student-file-input" id="student-photo-${slot.index}" type="file" accept="image/*" onchange="handleStudentPhoto(${slot.index}, this.files)">
+          <button class="btn-secondary" type="button" onclick="clearStudentPhoto(${slot.index})">Clear</button>
+        </div>
+        <div class="student-photo-name" id="student-photo-name-${slot.index}">No file chosen.</div>
+      </div>
+    </div>
+  `).join('');
+}
 
-function addFiles(files) {
-  for (const f of files) {
-    if (!f.type.startsWith('image/')) continue;
-    selectedFiles.push(f);
+function handleStudentPhoto(slotIndex, files) {
+  const file = files && files[0] ? files[0] : null;
+  const idx = slotIndex - 1;
+  if (currentStudentPreviewUrls[idx]) {
+    URL.revokeObjectURL(currentStudentPreviewUrls[idx]);
+    currentStudentPreviewUrls[idx] = '';
   }
-  renderPreviews();
+  currentStudentFiles[idx] = file;
+  if (file) currentStudentPreviewUrls[idx] = URL.createObjectURL(file);
+  renderStudentPreview(slotIndex);
 }
 
-function renderPreviews() {
-  const strip = document.getElementById('preview-strip');
-  if (selectedFiles.length === 0) { strip.innerHTML = ''; return; }
-
-  strip.innerHTML = selectedFiles.map((f, i) => {
-    const url = URL.createObjectURL(f);
-    return `<div class="prev-item">
-      <div class="prev-rm" onclick="removeFile(${i})">✕</div>
-      <img class="prev-img" src="${url}" alt="${esc(f.name)}"
-           onload="this.style.opacity=1"
-           onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2290%22 height=%2290%22><rect width=%2290%22 height=%2290%22 fill=%22%23dbeafe%22/><text x=%2245%22 y=%2250%22 text-anchor=%22middle%22 font-size=%2224%22>📷</text></svg>'"
-           style="opacity:0;transition:opacity .3s">
-      <div class="prev-name">${esc(f.name)}</div>
-    </div>`;
-  }).join('') + `<div class="preview-count">${selectedFiles.length} photo${selectedFiles.length>1?'s':''} selected</div>`;
+function clearStudentPhoto(slotIndex) {
+  const idx = slotIndex - 1;
+  if (currentStudentPreviewUrls[idx]) {
+    URL.revokeObjectURL(currentStudentPreviewUrls[idx]);
+    currentStudentPreviewUrls[idx] = '';
+  }
+  currentStudentFiles[idx] = null;
+  const input = document.getElementById(`student-photo-${slotIndex}`);
+  if (input) input.value = '';
+  renderStudentPreview(slotIndex);
 }
 
-function removeFile(i) {
-  URL.revokeObjectURL(document.querySelectorAll('.prev-img')[i]?.src);
-  selectedFiles.splice(i, 1);
-  renderPreviews();
+function renderStudentPreview(slotIndex) {
+  const idx = slotIndex - 1;
+  const box = document.getElementById(`student-preview-${slotIndex}`);
+  const label = document.getElementById(`student-photo-name-${slotIndex}`);
+  const file = currentStudentFiles[idx];
+  if (!file) {
+    box.innerHTML = `<div class="student-preview-empty">No picture selected yet.</div>`;
+    label.textContent = 'No file chosen.';
+    return;
+  }
+  box.innerHTML = `<img src="${esc(currentStudentPreviewUrls[idx])}" alt="${esc(file.name)}">`;
+  label.textContent = file.name;
 }
 
 function getPrimaryFileId(entry) {
@@ -962,38 +1162,62 @@ function getPrimaryOpenUrl(entry) {
   return fileId ? `https://drive.google.com/file/d/${encodeURIComponent(fileId)}/view` : getPrimaryFileUrl(entry);
 }
 
-function rowMatchesUpload(row, payload) {
-  const keys = ['year','month','type','center','school','name','lesson','level','activity','comments'];
-  return keys.every(key => String(row?.[key] || '') === String(payload?.[key] || ''));
-}
-
-async function waitForUploadConfirmation(year, month, previousCount, createdId, payload) {
+async function waitForReportConfirmation(year, month, reportId, expectedCount) {
   const deadline = Date.now() + 15000;
   while (Date.now() < deadline) {
     await sleep(1200);
-    const rows = await fetchSheetList(year, month);
-    if (createdId && rows.some(row => row.id === createdId)) return rows;
-    if (!createdId && rows.length > previousCount && rows.some(row => rowMatchesUpload(row, payload))) return rows;
-    if (!createdId && rows.length > previousCount) return rows;
+    const rows = normalizeEntries(await fetchSheetList(year, month));
+    const matches = rows.filter(row => row.reportId === reportId);
+    if (matches.length >= expectedCount) return rows;
   }
-  throw new Error('Upload request was sent, but no metadata row appeared in Google Sheet. Please check that your Apps Script URL supports upload + sheet write.');
+  throw new Error('Upload requests were sent, but the new student records did not appear in Google Sheet. Please check the Apps Script deployment and try again.');
 }
 
 // ── UPLOAD ────────────────────────────────────────────────────
 async function submitUpload() {
   hideAlert('upload-alert');
 
-  // ── Validate type
   if (!currentType) {
     showAlert('upload-alert','warn','Please select a <strong>Type</strong> first — In-Centre, Pre-School, INT, or OST.');
     return;
   }
 
-  // ── Validate date
   const year  = document.getElementById('u-year').value;
   const month = document.getElementById('u-month').value;
+  const className = document.getElementById('u-class').value.trim();
+  const level = document.getElementById('u-level').value;
+  const lessonNumber = document.getElementById('u-lesson').value.trim();
+  const teacherName = document.getElementById('u-teacher').value.trim();
+  const classReport = document.getElementById('u-class-report').value.trim();
+
   if (!year)  { showAlert('upload-alert','err','Please select a <strong>Year</strong>.'); return; }
   if (!month) { showAlert('upload-alert','err','Please select a <strong>Month</strong>.'); return; }
+  if (!className) { showAlert('upload-alert','err','Please enter a <strong>Class</strong> name, for example <strong>Venus</strong>.'); return; }
+  if (!level) { showAlert('upload-alert','err','Please select a <strong>Level</strong>.'); return; }
+  if (!lessonNumber) { showAlert('upload-alert','err','Please enter a <strong>Lesson Number</strong>.'); return; }
+  if (!teacherName) { showAlert('upload-alert','err','Please enter the <strong>Teacher Name</strong>.'); return; }
+  if (!classReport) { showAlert('upload-alert','err','Please write the <strong>Class Report</strong>.'); return; }
+
+  const students = [];
+  for (const slot of STUDENT_SLOT_CONFIG) {
+    const name = document.getElementById(`student-name-${slot.index}`).value.trim();
+    const comments = slot.comments ? document.getElementById(`student-comments-${slot.index}`).value.trim() : '';
+    const file = currentStudentFiles[slot.index - 1];
+    if (name && !file) {
+      showAlert('upload-alert','err',`Please choose a <strong>picture</strong> for Student ${slot.index}.`);
+      return;
+    }
+    if (!name && file) {
+      showAlert('upload-alert','err',`Please enter a <strong>name</strong> for Student ${slot.index}.`);
+      return;
+    }
+    if (name && file) students.push({ slotIndex:slot.index, name, comments, file });
+  }
+
+  if (!students.length) {
+    showAlert('upload-alert','err','Please complete at least <strong>one student record</strong> with a name and picture.');
+    return;
+  }
 
   try {
     const ensured = await ensureArchiveSheet();
@@ -1006,49 +1230,8 @@ async function submitUpload() {
     return;
   }
 
-  // ── Build payload & validate per-type fields
-  const payload = { action:'upload', year, month, type: currentType };
-
-  if (currentType === 'In-Centre') {
-    const name   = document.getElementById('ic-name').value.trim();
-    const lesson = document.getElementById('ic-lesson').value.trim();
-    const level  = document.getElementById('ic-level').value;
-    if (!name)   { showAlert('upload-alert','err','<strong>Student Name</strong> is required.'); return; }
-    if (!lesson) { showAlert('upload-alert','err','<strong>Lesson Number</strong> is required.'); return; }
-    if (!level)  { showAlert('upload-alert','err','Please select a <strong>Level</strong>.'); return; }
-    Object.assign(payload, { name, lesson, level, comments: document.getElementById('ic-comments').value.trim() });
-
-  } else if (currentType === 'Pre-School') {
-    const center = document.getElementById('ps-center').value;
-    const name   = document.getElementById('ps-name').value.trim();
-    const lesson = document.getElementById('ps-lesson').value.trim();
-    const level  = document.getElementById('ps-level').value;
-    if (!center) { showAlert('upload-alert','err','Please select a <strong>Center</strong> (TPY / BDM / CBP / FDL).'); return; }
-    if (!name)   { showAlert('upload-alert','err','<strong>Student Name</strong> is required.'); return; }
-    if (!lesson) { showAlert('upload-alert','err','<strong>Lesson Number</strong> is required.'); return; }
-    if (!level)  { showAlert('upload-alert','err','Please select a <strong>Level</strong>.'); return; }
-    Object.assign(payload, { center, name, lesson, level, comments: document.getElementById('ps-comments').value.trim() });
-
-  } else if (currentType === 'INT') {
-    const school = document.getElementById('int-school').value;
-    if (!school) { showAlert('upload-alert','err','Please select a <strong>School</strong>.'); return; }
-    Object.assign(payload, { school });
-
-  } else if (currentType === 'OST') {
-    const activity = document.getElementById('ost-activity').value.trim();
-    if (!activity) { showAlert('upload-alert','err','<strong>Activity Name</strong> is required.'); return; }
-    Object.assign(payload, { activity });
-  }
-
-  // ── Validate photos
-  if (selectedFiles.length === 0) {
-    showAlert('upload-alert','err','Please attach <strong>at least one photo</strong> before uploading.');
-    return;
-  }
-
-  // ── Upload
   setUploading(true);
-  showAlert('upload-alert','warn','⏳ Uploading photos to Google Drive, please wait…');
+  showAlert('upload-alert','warn','⏳ Uploading weekly report and student records, please wait…');
 
   const prog = document.getElementById('prog-wrap');
   const bar  = document.getElementById('prog-fill');
@@ -1057,41 +1240,63 @@ async function submitUpload() {
   bar.style.width = '0%';
 
   try {
-    const uploadedCount = selectedFiles.length;
-    let previousCount = 0;
-    try {
-      previousCount = (await fetchSheetList(year, month)).length;
-    } catch (_) {}
+    const reportId = (window.crypto?.randomUUID?.() || `report-${Date.now()}-${Math.random().toString(36).slice(2,8)}`);
+    for (let i = 0; i < students.length; i++) {
+      const student = students[i];
+      txt.textContent = `Preparing Student ${student.slotIndex} (${i + 1}/${students.length})…`;
+      bar.style.width = `${Math.round((i / students.length) * 35)}%`;
+      const b64 = await toBase64(student.file);
+      const payload = {
+        action:'upload',
+        year,
+        month,
+        type: currentType,
+        center: className,
+        school: teacherName,
+        name: student.name,
+        lesson: lessonNumber,
+        level,
+        reportId,
+        className,
+        teacherName,
+        classReport,
+        studentIndex: student.slotIndex,
+        studentName: student.name,
+        studentComments: student.comments || '',
+        activity: JSON.stringify({
+          schema:'fra-weekly-report-v1',
+          reportId,
+          className,
+          teacherName,
+          classReport,
+          studentIndex: student.slotIndex,
+          createdAt: new Date().toISOString()
+        }),
+        comments: student.comments || '',
+        files: [{
+          name: [year, month, currentType, slug(className), slug(teacherName), slug(student.name), slug(lessonNumber), slug(level)].join('_') + '.' + ((student.file.type.split('/')[1] || 'jpg').replace('jpeg','jpg')),
+          originalName: student.file.name,
+          mime: student.file.type,
+          data: b64
+        }]
+      };
 
-    const filePayloads = [];
-    for (let i = 0; i < selectedFiles.length; i++) {
-      txt.textContent = `Reading photo ${i+1} of ${selectedFiles.length}…`;
-      bar.style.width = `${Math.round((i / selectedFiles.length) * 50)}%`;
-      const b64 = await toBase64(selectedFiles[i]);
-      const filename = buildFilename(payload, selectedFiles[i], i, selectedFiles.length);
-      filePayloads.push({
-        name: filename,
-        originalName: selectedFiles[i].name,
-        mime: selectedFiles[i].type,
-        data: b64
-      });
+      txt.textContent = `Uploading Student ${student.slotIndex} (${i + 1}/${students.length})…`;
+      bar.style.width = `${Math.round(35 + ((i + 1) / students.length) * 45)}%`;
+      await postScriptPayload(payload);
     }
 
-    txt.textContent = 'Sending to Google Drive…';
-    bar.style.width = '75%';
-
-    const uploadData = await postScriptPayload({ ...payload, files: filePayloads });
-
-    txt.textContent = 'Verifying Google Sheet entry…';
+    txt.textContent = 'Verifying Google Sheet entries…';
     bar.style.width = '88%';
-    const confirmedRows = await waitForUploadConfirmation(year, month, previousCount, uploadData.id, payload);
-
+    const confirmedRows = await waitForReportConfirmation(year, month, reportId, students.length);
     bar.style.width = '100%';
-    txt.textContent = `✓ ${uploadedCount} photo${uploadedCount>1?'s':''} uploaded!`;
+    txt.textContent = `✓ ${students.length} student record${students.length>1?'s':''} uploaded!`;
     allEntries = confirmedRows;
+    refreshDynamicFilters();
     resetUploadForm();
     applyFilters();
-    showAlert('upload-alert','ok',`${uploadedCount} photo${uploadedCount>1?'s':''} uploaded and confirmed in Google Sheet.`);
+    renderReports();
+    showAlert('upload-alert','ok',`${students.length} student record${students.length>1?'s':''} uploaded and grouped into one teacher weekly report.`);
     setTimeout(() => switchPage('browse'), 2200);
 
   } catch (e) {
@@ -1105,21 +1310,22 @@ async function submitUpload() {
 
 function setUploading(v) {
   document.getElementById('submit-btn').disabled = v;
-  document.getElementById('submit-text').textContent = v ? 'Uploading…' : 'Upload to Archive';
+  document.getElementById('submit-text').textContent = v ? 'Uploading…' : 'Upload Weekly Report';
   document.getElementById('submit-spin').classList.toggle('hidden', !v);
 }
 
 function resetUploadForm() {
   currentType = '';
-  selectedFiles = [];
   document.querySelectorAll('.type-opt').forEach(el => el.classList.remove('selected'));
-  document.querySelectorAll('.dyn-section').forEach(el => el.classList.remove('show'));
-  document.getElementById('preview-strip').innerHTML = '';
-  document.getElementById('photo-input').value = '';
-  ['ic-name','ic-lesson','ic-comments','ps-name','ps-lesson','ps-comments','ost-activity']
-    .forEach(id => { try { document.getElementById(id).value=''; } catch(e){} });
-  ['ic-level','ps-center','ps-level','int-school','u-year','u-month']
-    .forEach(id => { try { document.getElementById(id).value=''; } catch(e){} });
+  ['u-class','u-lesson','u-teacher','u-class-report'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  ['u-year','u-month','u-level'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  STUDENT_SLOT_CONFIG.forEach(slot => {
+    const name = document.getElementById(`student-name-${slot.index}`);
+    if (name) name.value = '';
+    const comments = document.getElementById(`student-comments-${slot.index}`);
+    if (comments) comments.value = '';
+    clearStudentPhoto(slot.index);
+  });
 }
 
 // ── GALLERY ───────────────────────────────────────────────────
@@ -1128,21 +1334,26 @@ async function loadEntries() {
   countEl.textContent = 'Loading…';
   try {
     await ensureArchiveSheet();
-    allEntries = await fetchSheetList(state.year, state.month);
+    allEntries = normalizeEntries(await fetchSheetList(state.year, state.month));
   } catch(e) {
-    // keep existing
+    showAlert('browse-alert','err', `Could not load entries from Google Sheet.<br>${esc(e?.message || 'Unknown error')}`);
   }
+  refreshDynamicFilters();
   applyFilters();
+  renderReports();
 }
 
 function getFiltered() {
   const t = document.getElementById('f-type').value;
-  const c = document.getElementById('f-center').value;
+  const c = document.getElementById('f-class').value;
+  const teacher = document.getElementById('f-teacher').value;
   const l = document.getElementById('f-level').value;
   return allEntries.filter(e => {
+    if (state.year && String(e.year) !== String(state.year)) return false;
     if (state.month && e.month !== state.month) return false;
     if (t && e.type !== t) return false;
-    if (c && e.center !== c) return false;
+    if (c && e.className !== c) return false;
+    if (teacher && e.teacherName !== teacher) return false;
     if (l && e.level !== l) return false;
     return true;
   });
@@ -1151,9 +1362,21 @@ function getFiltered() {
 function applyFilters() { renderGallery(getFiltered()); }
 function resetFilters() {
   document.getElementById('f-type').value = '';
-  document.getElementById('f-center').value = '';
+  document.getElementById('f-class').value = '';
+  document.getElementById('f-teacher').value = '';
   document.getElementById('f-level').value = '';
   applyFilters();
+}
+
+function refreshDynamicFilters() {
+  const classes = uniqueValues(allEntries.map(e => e.className));
+  const teachers = uniqueValues(allEntries.map(e => e.teacherName));
+  const years = uniqueValues(YEARS.concat(allEntries.map(e => String(e.year || ''))).filter(Boolean));
+  setSelectOptions('f-class', 'All Classes', classes);
+  setSelectOptions('f-teacher', 'All Teachers', teachers);
+  setSelectOptions('r-class', 'All Classes', classes);
+  setSelectOptions('r-teacher', 'All Teachers', teachers);
+  setSelectOptions('r-year', 'All Years', years);
 }
 
 function renderGallery(list) {
@@ -1161,7 +1384,7 @@ function renderGallery(list) {
   const empty = document.getElementById('empty-state');
   const count = document.getElementById('gallery-count');
   const yearLabel = state.year || 'All Years';
-  count.textContent = `${list.length} entr${list.length!==1?'ies':'y'} · ${yearLabel}${state.month?' · '+state.month:''}`;
+  count.textContent = `${list.length} student entr${list.length!==1?'ies':'y'} · ${yearLabel}${state.month?' · '+state.month:''}`;
 
   if (!list.length) { grid.innerHTML=''; empty.classList.remove('hidden'); return; }
   empty.classList.add('hidden');
@@ -1172,19 +1395,15 @@ function renderGallery(list) {
       ? `<iframe class="photo-card-frame" src="${esc(previewUrl)}" title="${esc(e.name || e.activity || e.school || e.type || 'Photo preview')}" loading="lazy"></iframe>`
       : `<div class="photo-card-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#b8cce8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>`;
 
-    const title = e.type==='In-Centre'  ? [e.name,e.lesson].filter(Boolean).join(' · ')
-                : e.type==='Pre-School' ? [e.center,e.name,e.lesson].filter(Boolean).join(' · ')
-                : e.type==='INT'        ? (e.school||'INT')
-                :                        (e.activity||'OST Activity');
-
     const tags = [
       `<span class="tag tag-type">${esc(e.type)}</span>`,
-      e.center ? `<span class="tag tag-center">${esc(e.center)}</span>` : '',
-      e.school  ? `<span class="tag tag-school">${esc(e.school)}</span>` : '',
+      e.className ? `<span class="tag tag-center">${esc(e.className)}</span>` : '',
+      e.teacherName ? `<span class="tag tag-school">${esc(e.teacherName)}</span>` : '',
       e.level   ? `<span class="tag tag-level">${esc(e.level)}</span>` : '',
     ].filter(Boolean).join('');
 
-    const cnt = e.fileUrls?.length || 0;
+    const summary = [e.className, e.teacherName, e.lessonNumber].filter(Boolean).join(' · ');
+    const description = e.studentComments || e.classReport || e.comments || 'No comments yet.';
     return `<div class="photo-card" onclick="openLightbox(${idx})">
       <div class="photo-card-img-wrap">
         ${imgHtml}
@@ -1195,11 +1414,12 @@ function renderGallery(list) {
       </div>
       <div class="photo-card-body">
         <div class="photo-card-tags">${tags}</div>
-        <div class="photo-card-title">${esc(title)}</div>
-        ${e.comments ? `<div class="photo-card-meta">${esc(e.comments)}</div>` : ''}
+        <div class="photo-card-title">${esc(getDisplayTitle(e))}</div>
+        ${summary ? `<div class="photo-card-summary">${esc(summary)}</div>` : ''}
+        <div class="photo-card-meta">${esc(description)}</div>
         <div class="photo-card-foot">
           <span>${esc(e.month||'')} ${esc(String(e.year||''))}</span>
-          <span>${cnt} photo${cnt!==1?'s':''}</span>
+          <span>${esc(e.lessonNumber || 'Student record')}</span>
         </div>
       </div>
     </div>`;
@@ -1228,19 +1448,20 @@ function openLightbox(idx) {
     lbFrame.src = '';
     lbFrame.classList.add('hidden');
   }
-  document.getElementById('lb-title').textContent =
-    e.type==='In-Centre'  ? [e.name,e.lesson,e.level].filter(Boolean).join(' · ')
-    : e.type==='Pre-School' ? [e.center,e.name,e.lesson,e.level].filter(Boolean).join(' · ')
-    : e.type==='INT' ? (e.school||'INT')
-    : (e.activity||'OST Activity');
+  document.getElementById('lb-title').textContent = getDisplayTitle(e);
   document.getElementById('lb-tags').innerHTML = [
     `<span class="lb-tag">${esc(e.type)}</span>`,
-    e.center ? `<span class="lb-tag">${esc(e.center)}</span>` : '',
-    e.school  ? `<span class="lb-tag">${esc(e.school)}</span>` : '',
+    e.className ? `<span class="lb-tag">${esc(e.className)}</span>` : '',
+    e.teacherName  ? `<span class="lb-tag">${esc(e.teacherName)}</span>` : '',
     e.level   ? `<span class="lb-tag">${esc(e.level)}</span>` : '',
+    e.lessonNumber ? `<span class="lb-tag">${esc(e.lessonNumber)}</span>` : '',
     e.month   ? `<span class="lb-tag">${esc(e.month)} ${esc(String(e.year||''))}</span>` : '',
   ].filter(Boolean).join('');
-  document.getElementById('lb-comment').textContent = e.comments || '';
+  document.getElementById('lb-comment').innerHTML = [
+    e.studentComments ? `<div class="lb-comment-block"><div class="lb-comment-label">STUDENT COMMENTS</div><div>${esc(e.studentComments)}</div></div>` : '',
+    e.classReport ? `<div class="lb-comment-block"><div class="lb-comment-label">CLASS REPORT</div><div>${esc(e.classReport)}</div></div>` : '',
+    !e.studentComments && !e.classReport ? `<div>No comments available for this record.</div>` : ''
+  ].join('');
   document.getElementById('lightbox').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -1254,11 +1475,13 @@ function closeLightbox() {
   currentLightboxOpenUrl = '';
 }
 function closeLB(e) { if(e.target===document.getElementById('lightbox')) closeLightbox(); }
-function copyUrl() { navigator.clipboard.writeText(currentLightboxOpenUrl || document.getElementById('lb-img').src).then(()=>alert('URL copied!')); }
+function copyUrl() { navigator.clipboard.writeText(currentLightboxOpenUrl || document.getElementById('lb-img').src).then(()=>alert('URL copied!')).catch(()=>alert('Could not copy the URL on this browser.')); }
 function openInNew() { window.open(currentLightboxOpenUrl || document.getElementById('lb-img').src,'_blank'); }
 function removeEntryFromPage(entryId) {
   allEntries = allEntries.filter(entry => entry.id !== entryId);
+  refreshDynamicFilters();
   applyFilters();
+  renderReports();
 }
 
 async function deleteEntryFromWebsite(entry, source) {
@@ -1295,28 +1518,40 @@ function openEditModal(idx) {
   currentEntry = list[idx];
   if (!currentEntry) return;
   const e = currentEntry;
-  const selLevels = ['Level 1','Level 2','Level 3','Level 4','Level 5','Level 6','Level 7','Level 8'];
-  const selOpts = arr => arr.map(o=>`<option>${o}</option>`).join('');
-  let html = '<div class="form-grid">';
-  if (e.type==='In-Centre') {
-    html += `<div class="ff"><label class="ff-label">STUDENT NAME</label><input class="ff-input" id="ed-name" value="${esc(e.name||'')}"></div>
-             <div class="ff"><label class="ff-label">LESSON NUMBER</label><input class="ff-input" id="ed-lesson" value="${esc(e.lesson||'')}"></div>
-             <div class="ff"><label class="ff-label">LEVEL</label><select class="ff-select" id="ed-level">${selLevels.map(o=>`<option ${o===e.level?'selected':''}>${o}</option>`).join('')}</select></div>
-             <div class="ff full"><label class="ff-label">COMMENTS</label><textarea class="ff-textarea" id="ed-comments">${esc(e.comments||'')}</textarea></div>`;
-  } else if (e.type==='Pre-School') {
-    const centers=['TPY','BDM','CBP','FDL'];
-    html += `<div class="ff"><label class="ff-label">CENTER</label><select class="ff-select" id="ed-center">${centers.map(o=>`<option ${o===e.center?'selected':''}>${o}</option>`).join('')}</select></div>
-             <div class="ff"><label class="ff-label">STUDENT NAME</label><input class="ff-input" id="ed-name" value="${esc(e.name||'')}"></div>
-             <div class="ff"><label class="ff-label">LESSON NUMBER</label><input class="ff-input" id="ed-lesson" value="${esc(e.lesson||'')}"></div>
-             <div class="ff"><label class="ff-label">LEVEL</label><select class="ff-select" id="ed-level">${selLevels.map(o=>`<option ${o===e.level?'selected':''}>${o}</option>`).join('')}</select></div>
-             <div class="ff full"><label class="ff-label">COMMENTS</label><textarea class="ff-textarea" id="ed-comments">${esc(e.comments||'')}</textarea></div>`;
-  } else if (e.type==='INT') {
-    const schools=['SJII','OWIS@Punggol','OWIS@Nanyang','XCL','AIS'];
-    html += `<div class="ff full"><label class="ff-label">SCHOOL</label><select class="ff-select" id="ed-school">${schools.map(o=>`<option ${o===e.school?'selected':''}>${o}</option>`).join('')}</select></div>`;
-  } else if (e.type==='OST') {
-    html += `<div class="ff full"><label class="ff-label">ACTIVITY NAME</label><input class="ff-input" id="ed-activity" value="${esc(e.activity||'')}"></div>`;
-  }
-  html += '</div>';
+  let html = `<div class="form-grid">
+    <div class="ff">
+      <label class="ff-label">TYPE</label>
+      <select class="ff-select" id="ed-type">${['In-Centre','Pre-School','INT','OST'].map(o => `<option ${o===e.type?'selected':''}>${o}</option>`).join('')}</select>
+    </div>
+    <div class="ff">
+      <label class="ff-label">CLASS</label>
+      <input class="ff-input" id="ed-class" value="${esc(e.className || e.center || '')}">
+    </div>
+    <div class="ff">
+      <label class="ff-label">TEACHER NAME</label>
+      <input class="ff-input" id="ed-teacher" value="${esc(e.teacherName || '')}">
+    </div>
+    <div class="ff">
+      <label class="ff-label">STUDENT NAME</label>
+      <input class="ff-input" id="ed-name" value="${esc(e.studentName || e.name || '')}">
+    </div>
+    <div class="ff">
+      <label class="ff-label">LESSON NUMBER</label>
+      <input class="ff-input" id="ed-lesson" value="${esc(e.lessonNumber || e.lesson || '')}">
+    </div>
+    <div class="ff">
+      <label class="ff-label">LEVEL</label>
+      <select class="ff-select" id="ed-level">${LEVELS.map(o=>`<option ${o===e.level?'selected':''}>${o}</option>`).join('')}</select>
+    </div>
+    <div class="ff full">
+      <label class="ff-label">STUDENT COMMENTS</label>
+      <textarea class="ff-textarea" id="ed-comments">${esc(e.studentComments || e.comments || '')}</textarea>
+    </div>
+    <div class="ff full">
+      <label class="ff-label">CLASS REPORT</label>
+      <textarea class="ff-textarea" id="ed-class-report">${esc(e.classReport || '')}</textarea>
+    </div>
+  </div>`;
   document.getElementById('edit-modal-body').innerHTML = html;
   document.getElementById('edit-modal').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -1324,29 +1559,179 @@ function openEditModal(idx) {
 
 function closeEditModal() { document.getElementById('edit-modal').classList.remove('open'); document.body.style.overflow=''; currentEntry=null; }
 
+function buildUpdatePayload(entry) {
+  const weekly = entry.classReport || entry.reportId || entry.teacherName || entry.meta?.schema === 'fra-weekly-report-v1';
+  return {
+    action: 'update',
+    id: entry.id,
+    year: entry.year,
+    month: entry.month,
+    type: entry.type,
+    center: weekly ? (entry.className || '') : (entry.center || ''),
+    school: weekly ? (entry.teacherName || '') : (entry.school || ''),
+    name: weekly ? (entry.studentName || '') : (entry.name || ''),
+    lesson: entry.lessonNumber || entry.lesson || '',
+    level: entry.level || '',
+    reportId: weekly ? (entry.reportId || '') : '',
+    className: weekly ? (entry.className || '') : '',
+    teacherName: weekly ? (entry.teacherName || '') : '',
+    classReport: weekly ? (entry.classReport || '') : '',
+    studentIndex: weekly ? (entry.studentIndex || '') : '',
+    studentName: weekly ? (entry.studentName || '') : '',
+    studentComments: weekly ? (entry.studentComments || '') : '',
+    activity: weekly ? buildWeeklyMeta(entry) : (entry.activity || ''),
+    comments: weekly ? (entry.studentComments || '') : (entry.comments || ''),
+    fileIds: entry.fileIds || [],
+    fileUrls: entry.fileUrls || [],
+    timestamp: entry.timestamp || ''
+  };
+}
+
 async function saveEdit() {
   if (!currentEntry) return;
   const e = currentEntry;
   const g = id => { try { return document.getElementById(id)?.value?.trim()||''; } catch(_){return '';} };
-  if (e.type==='In-Centre')   { e.name=g('ed-name');e.lesson=g('ed-lesson');e.level=g('ed-level');e.comments=g('ed-comments'); }
-  else if (e.type==='Pre-School') { e.center=g('ed-center');e.name=g('ed-name');e.lesson=g('ed-lesson');e.level=g('ed-level');e.comments=g('ed-comments'); }
-  else if (e.type==='INT')    { e.school=g('ed-school'); }
-  else if (e.type==='OST')    { e.activity=g('ed-activity'); }
+  e.type = g('ed-type') || e.type;
+  e.className = g('ed-class');
+  e.teacherName = g('ed-teacher');
+  e.studentName = g('ed-name');
+  e.name = e.studentName;
+  e.lessonNumber = g('ed-lesson');
+  e.lesson = e.lessonNumber;
+  e.level = g('ed-level') || e.level;
+  e.studentComments = g('ed-comments');
+  e.comments = e.studentComments;
+  e.classReport = g('ed-class-report');
+  e.center = e.className;
+  e.school = e.teacherName;
+  e.activity = buildWeeklyMeta(e);
+  e.isWeekly = true;
   const li = allEntries.findIndex(x=>x.id===e.id);
-  if (li>=0) allEntries[li]=e;
+  if (li>=0) allEntries[li] = normalizeEntry({ ...allEntries[li], ...e });
+  refreshDynamicFilters();
   renderGallery(getFiltered());
+  renderReports();
   closeEditModal();
   try {
-    await postScriptPayload({action:'update',id:e.id,...e});
+    await postScriptPayload(buildUpdatePayload(e));
     setTimeout(() => loadEntries(), 800);
   } catch(err) {
     showAlert('upload-alert','err', `Saved locally, but Google Sheet update failed: ${esc(err?.message || 'unknown error')}`);
   }
 }
 
+// ── TEACHER REPORTS ───────────────────────────────────────────
+function getReportGroups() {
+  const map = new Map();
+  for (const entry of allEntries) {
+    if (!(entry.reportId || entry.classReport)) continue;
+    const key = getReportKey(entry);
+    if (!map.has(key)) {
+      map.set(key, {
+        key,
+        reportId: entry.reportId,
+        type: entry.type,
+        year: entry.year,
+        month: entry.month,
+        className: entry.className,
+        teacherName: entry.teacherName,
+        level: entry.level,
+        lessonNumber: entry.lessonNumber,
+        classReport: entry.classReport,
+        timestampMs: entry.timestampMs,
+        students: []
+      });
+    }
+    const group = map.get(key);
+    group.timestampMs = Math.max(group.timestampMs || 0, entry.timestampMs || 0);
+    group.students.push(entry);
+  }
+  return [...map.values()]
+    .map(group => ({ ...group, students: group.students.sort((a,b) => (a.studentIndex || 99) - (b.studentIndex || 99)) }))
+    .sort((a,b) => (b.timestampMs || 0) - (a.timestampMs || 0));
+}
+
+function getFilteredReports() {
+  const type = document.getElementById('r-type').value;
+  const year = document.getElementById('r-year').value;
+  const month = document.getElementById('r-month').value;
+  const className = document.getElementById('r-class').value;
+  const teacherName = document.getElementById('r-teacher').value;
+  const level = document.getElementById('r-level').value;
+  return getReportGroups().filter(group => {
+    if (type && group.type !== type) return false;
+    if (year && String(group.year) !== String(year)) return false;
+    if (month && group.month !== month) return false;
+    if (className && group.className !== className) return false;
+    if (teacherName && group.teacherName !== teacherName) return false;
+    if (level && group.level !== level) return false;
+    return true;
+  });
+}
+
+function renderReports() {
+  const list = getFilteredReports();
+  reportGroupsCache = list;
+  const grid = document.getElementById('report-grid');
+  const empty = document.getElementById('report-empty');
+  const count = document.getElementById('report-count');
+  if (!grid || !empty || !count) return;
+  count.textContent = `${list.length} weekly report${list.length!==1?'s':''}`;
+  if (!list.length) {
+    grid.innerHTML = '';
+    empty.classList.remove('hidden');
+    return;
+  }
+  empty.classList.add('hidden');
+  grid.innerHTML = list.map((group, idx) => `
+    <div class="report-card">
+      <div class="report-card-head">
+        <div>
+          <div class="report-card-title">${esc(group.className || 'Untitled Class')}</div>
+          <div class="report-card-sub">${esc(group.teacherName || 'Teacher not set')} · ${esc(group.month || '')} ${esc(String(group.year || ''))}</div>
+        </div>
+      </div>
+      <div class="report-tags">
+        <span class="tag tag-type">${esc(group.type || 'Type')}</span>
+        ${group.level ? `<span class="tag tag-level">${esc(group.level)}</span>` : ''}
+        ${group.lessonNumber ? `<span class="tag tag-center">${esc(group.lessonNumber)}</span>` : ''}
+      </div>
+      <div class="report-body">${esc(group.classReport || 'No class report provided.')}</div>
+      <div class="report-students">
+        ${group.students.map(student => `
+          <div class="report-student">
+            <strong>${esc(student.studentName || 'Student')}</strong>
+            ${student.studentComments ? `<div>${esc(student.studentComments)}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>
+      <div class="report-actions">
+        <button class="btn-secondary" type="button" onclick="openReportInBrowse(${idx})">Open in Browse</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openReportInBrowse(idx) {
+  const group = reportGroupsCache[idx];
+  if (!group) return;
+  state.year = String(group.year || '');
+  state.month = group.month || '';
+  buildYearChips();
+  buildMonthChips();
+  document.getElementById('f-type').value = group.type || '';
+  document.getElementById('f-class').value = group.className || '';
+  document.getElementById('f-teacher').value = group.teacherName || '';
+  document.getElementById('f-level').value = group.level || '';
+  switchPage('browse');
+  applyFilters();
+}
+
 document.addEventListener('keydown', e => {
   if (e.key==='Escape') { closeLightbox(); closeEditModal(); }
 });
+
+renderStudentSlots();
 </script>
 </body>
 </html>
