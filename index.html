@@ -213,6 +213,7 @@ button,input,select,textarea{font-family:var(--font-b)}
 .helper-note{font-size:12px;color:var(--ink3);line-height:1.7}
 .helper-note strong{color:var(--ink2)}
 .photo-card-summary{font-size:12px;color:var(--ink3);margin-bottom:8px;line-height:1.6}
+.photo-card-count{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:rgba(26,74,138,0.1);color:var(--brand);font-family:var(--font-m);font-size:10px;letter-spacing:1px}
 .lb-comment-block{margin-bottom:10px}
 .lb-comment-label{font-family:var(--font-m);font-size:10px;letter-spacing:1px;color:rgba(255,255,255,0.45);margin-bottom:4px}
 
@@ -239,6 +240,16 @@ button,input,select,textarea{font-family:var(--font-b)}
 .lb-tags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:8px}
 .lb-tag{font-family:var(--font-m);font-size:10px;color:rgba(255,255,255,0.55);background:rgba(255,255,255,0.1);padding:3px 9px;border-radius:4px}
 .lb-comment{font-size:13px;color:rgba(255,255,255,0.6);line-height:1.6}
+.lb-gallery-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:12px 0 0}
+.lb-gallery-count{font-family:var(--font-m);font-size:11px;letter-spacing:1px;color:rgba(255,255,255,0.55)}
+.lb-thumb-strip{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
+.lb-thumb-btn{min-width:34px;height:34px;padding:0 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.08);color:#fff;font-size:12px;cursor:pointer;transition:all var(--t)}
+.lb-thumb-btn:hover{background:rgba(255,255,255,0.16)}
+.lb-thumb-btn.active{background:#fff;color:var(--brand);border-color:#fff}
+.lb-nav{position:absolute;top:35%;transform:translateY(-50%);width:42px;height:42px;border:none;border-radius:50%;background:rgba(8,18,36,0.72);color:#fff;font-size:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--sh)}
+.lb-nav:hover{background:rgba(8,18,36,0.92)}
+.lb-nav-prev{left:14px}
+.lb-nav-next{right:14px}
 .lb-actions{display:flex;gap:10px;margin-top:14px}
 .lb-btn{padding:7px 16px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);border-radius:6px;color:#fff;font-size:12px;cursor:pointer;transition:all var(--t)}
 .lb-btn:hover{background:rgba(255,255,255,0.2)}
@@ -430,7 +441,7 @@ button,input,select,textarea{font-family:var(--font-b)}
 
       <!-- CLASS INFO -->
       <div class="form-card">
-        <div class="form-card-title">📅 Step 2 — Class Weekly Report</div>
+        <div class="form-card-title" id="weekly-step2-title">📅 Step 2 — Class Weekly Report</div>
         <div class="form-grid">
           <div class="ff" id="weekly-class-primary"></div>
           <div class="ff">
@@ -450,7 +461,7 @@ button,input,select,textarea{font-family:var(--font-b)}
             </select>
           </div>
           <div class="ff" id="weekly-class-secondary"></div>
-          <div class="ff">
+          <div class="ff" id="weekly-level-wrap">
             <label class="ff-label">LEVEL <span class="ff-req">*</span></label>
             <select class="ff-select" id="u-level">
               <option value="">Select level…</option>
@@ -458,30 +469,46 @@ button,input,select,textarea{font-family:var(--font-b)}
               <option>Level 5</option><option>Level 6</option><option>Level 7</option><option>Level 8</option>
             </select>
           </div>
-          <div class="ff">
+          <div class="ff" id="weekly-lesson-wrap">
             <label class="ff-label">LESSON NUMBER <span class="ff-req">*</span></label>
             <input class="ff-input" id="u-lesson" type="text" placeholder="e.g. Lesson 14">
           </div>
-          <div class="ff full">
+          <div class="ff full" id="weekly-teacher-wrap">
             <label class="ff-label">TEACHER NAME <span class="ff-req">*</span></label>
             <input class="ff-input" id="u-teacher" type="text" placeholder="e.g. Marianne">
           </div>
-          <div class="ff full">
+          <div class="ff full" id="weekly-class-report-wrap">
             <label class="ff-label">CLASS REPORT <span class="ff-req">*</span></label>
             <textarea class="ff-textarea" id="u-class-report" placeholder="Write the teacher weekly report here…"></textarea>
           </div>
         </div>
       </div>
 
-      <div class="form-card">
+      <div class="form-card" id="weekly-students-card">
         <div class="form-card-title">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
           Step 3 — Student Records
         </div>
-        <div class="helper-note" style="margin-bottom:16px">
-          Add up to <strong>5 students</strong>. Students 1-3 include comment boxes. Students 4-5 can be photo-only if you prefer.
+        <div class="helper-note" style="margin-bottom:16px" id="weekly-student-note">
+          Add up to <strong>5 students</strong>. Every student slot now includes <strong>name, picture and comments</strong>.
         </div>
         <div class="student-grid" id="student-slots"></div>
+      </div>
+
+      <div class="form-card hidden" id="weekly-group-card">
+        <div class="form-card-title">🖼️ Step 3 — Photo Collection</div>
+        <div class="helper-note" style="margin-bottom:16px" id="weekly-group-note">
+          Upload multiple photos for this record. Browse will show one card and the lightbox will let you step through the full set.
+        </div>
+        <div class="drop-zone" id="weekly-group-drop-zone">
+          <input type="file" id="weekly-group-photo-input" multiple accept="image/*" onchange="handleWeeklyGroupPhotoSelect(this.files)">
+          <div class="drop-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          </div>
+          <div class="drop-title">Click or drag &amp; drop photos here</div>
+          <div class="drop-hint">JPG, PNG, WEBP · Multiple files supported</div>
+        </div>
+        <div class="preview-strip" id="weekly-group-preview-strip"></div>
       </div>
 
       <!-- SUBMIT -->
@@ -492,7 +519,7 @@ button,input,select,textarea{font-family:var(--font-b)}
             <span id="submit-text">Upload Weekly Report</span>
             <span class="spin hidden" id="submit-spin"></span>
           </button>
-          <div class="submit-note">Each student photo becomes one student record.<br>The teacher weekly report is grouped automatically.</div>
+          <div class="submit-note" id="weekly-submit-note">Each student photo becomes one student record.<br>The teacher weekly report is grouped automatically.</div>
         </div>
         <div class="prog-wrap" id="prog-wrap">
           <div class="prog-bg"><div class="prog-fill" id="prog-fill"></div></div>
@@ -659,12 +686,18 @@ button,input,select,textarea{font-family:var(--font-b)}
 <div class="lightbox" id="lightbox" onclick="closeLB(event)">
   <div class="lb-inner" onclick="event.stopPropagation()">
     <button class="lb-close" onclick="closeLightbox()">✕</button>
+    <button class="lb-nav lb-nav-prev hidden" id="lb-prev" onclick="event.stopPropagation();changeLightboxPhoto(-1)">‹</button>
+    <button class="lb-nav lb-nav-next hidden" id="lb-next" onclick="event.stopPropagation();changeLightboxPhoto(1)">›</button>
     <iframe class="lb-frame hidden" id="lb-frame" src="" title="Photo preview"></iframe>
     <img class="lb-img" id="lb-img" src="" alt="">
     <div class="lb-info">
       <div class="lb-title" id="lb-title"></div>
       <div class="lb-tags" id="lb-tags"></div>
       <div class="lb-comment" id="lb-comment"></div>
+      <div class="lb-gallery-bar hidden" id="lb-gallery-bar">
+        <div class="lb-gallery-count" id="lb-gallery-count"></div>
+        <div class="lb-thumb-strip" id="lb-thumb-strip"></div>
+      </div>
       <div class="lb-actions">
         <button class="lb-btn" onclick="copyUrl()">📋 Copy URL</button>
         <button class="lb-btn" onclick="openInNew()">↗ Open full size</button>
@@ -709,8 +742,8 @@ const STUDENT_SLOT_CONFIG = [
   { index:1, comments:true },
   { index:2, comments:true },
   { index:3, comments:true },
-  { index:4, comments:false },
-  { index:5, comments:false }
+  { index:4, comments:true },
+  { index:5, comments:true }
 ];
 
 let state = { year:'', month:'' };
@@ -724,10 +757,13 @@ let archiveSheetReadyPromise = null;
 let currentLightboxOpenUrl = '';
 let currentStudentFiles = STUDENT_SLOT_CONFIG.map(() => null);
 let currentStudentPreviewUrls = STUDENT_SLOT_CONFIG.map(() => '');
+let currentGroupFiles = [];
+let currentGroupPreviewUrls = [];
 let uploadMode = 'weekly';
 let classicType = '';
 let classicSelectedFiles = [];
 let classicPreviewUrls = [];
+let currentLightboxPhotoIndex = 0;
 
 // ── HELPERS ───────────────────────────────────────────────────
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -859,6 +895,9 @@ function getClassicClassValue() {
   }
   return '';
 }
+function isCollectionType(type = currentType) {
+  return type === 'INT' || type === 'OST';
+}
 function renderClassicDetails() {
   const host = document.getElementById('classic-details-grid');
   if (!host) return;
@@ -923,6 +962,46 @@ function selectClassicType(type) {
   if (el) el.classList.add('selected');
   renderClassicDetails();
   hideAlert('classic-upload-alert');
+}
+function renderWeeklyUploadLayout() {
+  const collection = isCollectionType(currentType);
+  const step2Title = document.getElementById('weekly-step2-title');
+  const levelWrap = document.getElementById('weekly-level-wrap');
+  const lessonWrap = document.getElementById('weekly-lesson-wrap');
+  const teacherWrap = document.getElementById('weekly-teacher-wrap');
+  const classReportWrap = document.getElementById('weekly-class-report-wrap');
+  const studentCard = document.getElementById('weekly-students-card');
+  const groupCard = document.getElementById('weekly-group-card');
+  const submitText = document.getElementById('submit-text');
+  const submitNote = document.getElementById('weekly-submit-note');
+  const groupNote = document.getElementById('weekly-group-note');
+
+  if (step2Title) {
+    step2Title.textContent = currentType === 'OST'
+      ? '📅 Step 2 — Activity Details'
+      : currentType === 'INT'
+        ? '📅 Step 2 — INT Photo Collection'
+        : '📅 Step 2 — Class Weekly Report';
+  }
+
+  [levelWrap, lessonWrap, teacherWrap, classReportWrap].forEach(el => {
+    if (!el) return;
+    el.classList.toggle('hidden', collection);
+  });
+  if (studentCard) studentCard.classList.toggle('hidden', collection);
+  if (groupCard) groupCard.classList.toggle('hidden', !collection);
+
+  if (submitText) submitText.textContent = collection ? 'Upload Photo Collection' : 'Upload Weekly Report';
+  if (submitNote) {
+    submitNote.innerHTML = collection
+      ? 'This upload creates <strong>one card</strong> with a multi-photo gallery.<br>Click the card in Browse to step through the full set.'
+      : 'Each student photo becomes one student record.<br>The teacher weekly report is grouped automatically.';
+  }
+  if (groupNote) {
+    groupNote.innerHTML = currentType === 'INT'
+      ? 'Upload multiple photos for this school visit. Browse will show one INT card and the lightbox will let you step through the full set.'
+      : 'Upload multiple photos for this OST activity. Browse will show one activity card and the lightbox will let you step through the full set.';
+  }
 }
 function buildFilename(payload, file, idx, total) {
   const parts = [payload.year, payload.month, payload.type];
@@ -1340,8 +1419,10 @@ function init() {
   syncBackendUrlInput();
   renderStudentSlots();
   renderWeeklyClassFields();
+  renderWeeklyUploadLayout();
   renderClassicDetails();
   bindClassicDropZone();
+  bindWeeklyGroupDropZone();
   setUploadMode('weekly');
   buildYearChips();
   buildMonthChips();
@@ -1387,6 +1468,7 @@ function selectType(t) {
   const id = t === 'In-Centre' ? 't-incenter' : t === 'Pre-School' ? 't-preschool' : t === 'INT' ? 't-int' : 't-ost';
   document.getElementById(id).classList.add('selected');
   renderWeeklyClassFields();
+  renderWeeklyUploadLayout();
   hideAlert('upload-alert');
 }
 
@@ -1463,6 +1545,69 @@ function renderStudentPreview(slotIndex) {
   label.textContent = file.name;
 }
 
+function bindWeeklyGroupDropZone() {
+  const dropZone = document.getElementById('weekly-group-drop-zone');
+  if (!dropZone || dropZone.dataset.bound === '1') return;
+  dropZone.dataset.bound = '1';
+  dropZone.addEventListener('dragover', e => {
+    e.preventDefault();
+    dropZone.classList.add('drag-over');
+  });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    addWeeklyGroupFiles(e.dataTransfer.files);
+  });
+}
+
+function handleWeeklyGroupPhotoSelect(files) {
+  addWeeklyGroupFiles(files);
+  const input = document.getElementById('weekly-group-photo-input');
+  if (input) input.value = '';
+}
+
+function addWeeklyGroupFiles(files) {
+  for (const file of Array.from(files || [])) {
+    if (!file.type.startsWith('image/')) continue;
+    currentGroupFiles.push(file);
+    currentGroupPreviewUrls.push(URL.createObjectURL(file));
+  }
+  renderWeeklyGroupPreviews();
+}
+
+function renderWeeklyGroupPreviews() {
+  const strip = document.getElementById('weekly-group-preview-strip');
+  if (!strip) return;
+  if (!currentGroupFiles.length) {
+    strip.innerHTML = '';
+    return;
+  }
+  strip.innerHTML = currentGroupFiles.map((file, index) => `
+    <div class="prev-item">
+      <div class="prev-rm" onclick="removeWeeklyGroupFile(${index})">✕</div>
+      <img class="prev-img" src="${esc(currentGroupPreviewUrls[index] || '')}" alt="${esc(file.name)}">
+      <div class="prev-name">${esc(file.name)}</div>
+    </div>
+  `).join('') + `<div class="preview-count">${currentGroupFiles.length} photo${currentGroupFiles.length>1?'s':''} selected</div>`;
+}
+
+function removeWeeklyGroupFile(index) {
+  if (currentGroupPreviewUrls[index]) URL.revokeObjectURL(currentGroupPreviewUrls[index]);
+  currentGroupFiles.splice(index, 1);
+  currentGroupPreviewUrls.splice(index, 1);
+  renderWeeklyGroupPreviews();
+}
+
+function resetWeeklyGroupFiles() {
+  currentGroupPreviewUrls.forEach(url => { if (url) URL.revokeObjectURL(url); });
+  currentGroupFiles = [];
+  currentGroupPreviewUrls = [];
+  const input = document.getElementById('weekly-group-photo-input');
+  if (input) input.value = '';
+  renderWeeklyGroupPreviews();
+}
+
 function getPrimaryFileId(entry) {
   const directId = Array.isArray(entry?.fileIds) && entry.fileIds[0] ? String(entry.fileIds[0]).trim() : '';
   if (directId) return directId;
@@ -1486,6 +1631,30 @@ function getPrimaryPreviewEmbedUrl(entry) {
 function getPrimaryOpenUrl(entry) {
   const fileId = getPrimaryFileId(entry);
   return fileId ? `https://drive.google.com/file/d/${encodeURIComponent(fileId)}/view` : getPrimaryFileUrl(entry);
+}
+function getFileCount(entry) {
+  return Math.max(entry?.fileIds?.length || 0, entry?.fileUrls?.length || 0, 0);
+}
+function getFileIdAt(entry, index) {
+  const directId = Array.isArray(entry?.fileIds) && entry.fileIds[index] ? String(entry.fileIds[index]).trim() : '';
+  if (directId) return directId;
+  const url = Array.isArray(entry?.fileUrls) && entry.fileUrls[index] ? String(entry.fileUrls[index]).trim() : '';
+  const match = url.match(/[?&]id=([^&]+)/) || url.match(/\/d\/([^/?]+)/) || url.match(/download\/id=([^&]+)/);
+  return match ? decodeURIComponent(match[1]) : '';
+}
+function getFileUrlAt(entry, index) {
+  const url = Array.isArray(entry?.fileUrls) && entry.fileUrls[index] ? String(entry.fileUrls[index]).trim() : '';
+  if (url) return url;
+  const fileId = getFileIdAt(entry, index);
+  return fileId ? `https://drive.google.com/uc?export=view&id=${encodeURIComponent(fileId)}` : '';
+}
+function getPreviewEmbedUrlAt(entry, index) {
+  const fileId = getFileIdAt(entry, index);
+  return fileId ? `https://drive.google.com/file/d/${encodeURIComponent(fileId)}/preview` : '';
+}
+function getOpenUrlAt(entry, index) {
+  const fileId = getFileIdAt(entry, index);
+  return fileId ? `https://drive.google.com/file/d/${encodeURIComponent(fileId)}/view` : getFileUrlAt(entry, index);
 }
 
 async function waitForReportConfirmation(year, month, reportId, expectedCount) {
@@ -1600,6 +1769,84 @@ async function submitUpload() {
   if (!year)  { showAlert('upload-alert','err','Please select a <strong>Year</strong>.'); return; }
   if (!month) { showAlert('upload-alert','err','Please select a <strong>Month</strong>.'); return; }
   if (!className) { showAlert('upload-alert','err',`Please select a valid <strong>${classLabel}</strong>.`); return; }
+
+  if (isCollectionType(currentType)) {
+    if (!currentGroupFiles.length) {
+      showAlert('upload-alert','err','Please attach <strong>at least one photo</strong> for this collection.');
+      return;
+    }
+
+    try {
+      const ensured = await ensureArchiveSheet();
+      if (ensured.created) {
+        showAlert('upload-alert','warn','Created the missing main Google Sheet. Continuing upload…');
+      }
+    } catch (e) {
+      const msg = e?.message ? esc(e.message) : 'Unable to create or access the Google Sheet.';
+      showAlert('upload-alert','err',`Could not prepare the main Google Sheet before upload.<br>${msg}`);
+      return;
+    }
+
+    setUploading(true);
+    showAlert('upload-alert','warn',`⏳ Uploading ${esc(currentType)} photo collection, please wait…`);
+
+    const prog = document.getElementById('prog-wrap');
+    const bar  = document.getElementById('prog-fill');
+    const txt  = document.getElementById('prog-text');
+    prog.style.display = 'block';
+    bar.style.width = '0%';
+
+    try {
+      let previousCount = 0;
+      try {
+        previousCount = (await fetchSheetList(year, month)).length;
+      } catch (_) {}
+
+      const payload = { action:'upload', year, month, type: currentType };
+      if (currentType === 'INT') payload.school = className;
+      if (currentType === 'OST') payload.activity = className;
+
+      const files = [];
+      for (let i = 0; i < currentGroupFiles.length; i++) {
+        const file = currentGroupFiles[i];
+        txt.textContent = `Reading photo ${i + 1} of ${currentGroupFiles.length}…`;
+        bar.style.width = `${Math.round((i / currentGroupFiles.length) * 50)}%`;
+        const b64 = await toBase64(file);
+        files.push({
+          name: buildFilename(payload, file, i, currentGroupFiles.length),
+          originalName: file.name,
+          mime: file.type,
+          data: b64
+        });
+      }
+
+      txt.textContent = 'Sending to Google Drive…';
+      bar.style.width = '75%';
+      const uploadData = await postScriptPayload({ ...payload, files });
+
+      txt.textContent = 'Verifying Google Sheet entry…';
+      bar.style.width = '88%';
+      const confirmedRows = normalizeEntries(await waitForUploadConfirmation(year, month, previousCount, uploadData.id, payload));
+
+      allEntries = confirmedRows;
+      refreshDynamicFilters();
+      resetUploadForm();
+      applyFilters();
+      renderReports();
+      bar.style.width = '100%';
+      txt.textContent = `✓ ${files.length} photo${files.length>1?'s':''} uploaded!`;
+      showAlert('upload-alert','ok',`${currentType} collection uploaded with ${files.length} photo${files.length>1?'s':''}. Browse now shows it as one card with a gallery.`);
+      setTimeout(() => switchPage('browse'), 2200);
+    } catch (e) {
+      const msg = e?.message ? esc(e.message) : 'Network error. Please check your connection and try again.';
+      showAlert('upload-alert','err',msg);
+    } finally {
+      setUploading(false);
+      setTimeout(() => { prog.style.display='none'; bar.style.width='0%'; }, 3000);
+    }
+    return;
+  }
+
   if (!level) { showAlert('upload-alert','err','Please select a <strong>Level</strong>.'); return; }
   if (!lessonNumber) { showAlert('upload-alert','err','Please enter a <strong>Lesson Number</strong>.'); return; }
   if (!teacherName) { showAlert('upload-alert','err','Please enter the <strong>Teacher Name</strong>.'); return; }
@@ -1717,7 +1964,7 @@ async function submitUpload() {
 
 function setUploading(v) {
   document.getElementById('submit-btn').disabled = v;
-  document.getElementById('submit-text').textContent = v ? 'Uploading…' : 'Upload Weekly Report';
+  document.getElementById('submit-text').textContent = v ? 'Uploading…' : (isCollectionType(currentType) ? 'Upload Photo Collection' : 'Upload Weekly Report');
   document.getElementById('submit-spin').classList.toggle('hidden', !v);
 }
 
@@ -1734,6 +1981,8 @@ function resetUploadForm() {
     clearStudentPhoto(slot.index);
   });
   renderWeeklyClassFields();
+  renderWeeklyUploadLayout();
+  resetWeeklyGroupFiles();
 }
 
 async function submitClassicUpload() {
@@ -1911,12 +2160,13 @@ function renderGallery(list) {
   const empty = document.getElementById('empty-state');
   const count = document.getElementById('gallery-count');
   const yearLabel = state.year || 'All Years';
-  count.textContent = `${list.length} student entr${list.length!==1?'ies':'y'} · ${yearLabel}${state.month?' · '+state.month:''}`;
+  count.textContent = `${list.length} archive entr${list.length!==1?'ies':'y'} · ${yearLabel}${state.month?' · '+state.month:''}`;
 
   if (!list.length) { grid.innerHTML=''; empty.classList.remove('hidden'); return; }
   empty.classList.add('hidden');
 
   grid.innerHTML = list.map((e, idx) => {
+    const fileCount = getFileCount(e);
     const previewUrl = getPrimaryPreviewEmbedUrl(e);
     const imgHtml = previewUrl
       ? `<iframe class="photo-card-frame" src="${esc(previewUrl)}" title="${esc(e.name || e.activity || e.school || e.type || 'Photo preview')}" loading="lazy"></iframe>`
@@ -1930,7 +2180,7 @@ function renderGallery(list) {
     ].filter(Boolean).join('');
 
     const summary = [e.className, e.teacherName, e.lessonNumber].filter(Boolean).join(' · ');
-    const description = e.studentComments || e.classReport || e.comments || 'No comments yet.';
+    const description = e.studentComments || e.classReport || e.comments || (fileCount > 1 ? `Open this card to browse ${fileCount} photos.` : 'No comments yet.');
     return `<div class="photo-card" onclick="openLightbox(${idx})">
       <div class="photo-card-img-wrap">
         ${imgHtml}
@@ -1942,11 +2192,12 @@ function renderGallery(list) {
       <div class="photo-card-body">
         <div class="photo-card-tags">${tags}</div>
         <div class="photo-card-title">${esc(getDisplayTitle(e))}</div>
+        ${fileCount > 1 ? `<div class="photo-card-count">${fileCount} PHOTOS</div>` : ''}
         ${summary ? `<div class="photo-card-summary">${esc(summary)}</div>` : ''}
         <div class="photo-card-meta">${esc(description)}</div>
         <div class="photo-card-foot">
           <span>${esc(e.month||'')} ${esc(String(e.year||''))}</span>
-          <span>${esc(e.lessonNumber || 'Student record')}</span>
+          <span>${esc(e.lessonNumber || (fileCount ? `${fileCount} photo${fileCount>1?'s':''}` : 'Archive record'))}</span>
         </div>
       </div>
     </div>`;
@@ -1959,22 +2210,7 @@ function openLightbox(idx) {
   const e = list[idx];
   if (!e) return;
   currentLightboxEntry = e;
-  const previewUrl = getPrimaryPreviewEmbedUrl(e);
-  const openUrl = getPrimaryOpenUrl(e);
-  const lbImg = document.getElementById('lb-img');
-  const lbFrame = document.getElementById('lb-frame');
-  currentLightboxOpenUrl = openUrl;
-  if (previewUrl) {
-    lbFrame.src = previewUrl;
-    lbFrame.classList.remove('hidden');
-    lbImg.src = '';
-    lbImg.classList.add('hidden');
-  } else {
-    lbImg.src = getPrimaryFileUrl(e);
-    lbImg.classList.remove('hidden');
-    lbFrame.src = '';
-    lbFrame.classList.add('hidden');
-  }
+  currentLightboxPhotoIndex = 0;
   document.getElementById('lb-title').textContent = getDisplayTitle(e);
   document.getElementById('lb-tags').innerHTML = [
     `<span class="lb-tag">${esc(e.type)}</span>`,
@@ -1989,8 +2225,65 @@ function openLightbox(idx) {
     e.classReport ? `<div class="lb-comment-block"><div class="lb-comment-label">CLASS REPORT</div><div>${esc(e.classReport)}</div></div>` : '',
     !e.studentComments && !e.classReport ? `<div>No comments available for this record.</div>` : ''
   ].join('');
+  renderLightboxGallery();
   document.getElementById('lightbox').classList.add('open');
   document.body.style.overflow = 'hidden';
+}
+function renderLightboxGallery() {
+  const entry = currentLightboxEntry;
+  if (!entry) return;
+  const count = Math.max(getFileCount(entry), 1);
+  currentLightboxPhotoIndex = Math.max(0, Math.min(currentLightboxPhotoIndex, count - 1));
+
+  const lbImg = document.getElementById('lb-img');
+  const lbFrame = document.getElementById('lb-frame');
+  const previewUrl = getPreviewEmbedUrlAt(entry, currentLightboxPhotoIndex) || getPrimaryPreviewEmbedUrl(entry);
+  const openUrl = getOpenUrlAt(entry, currentLightboxPhotoIndex) || getPrimaryOpenUrl(entry);
+  currentLightboxOpenUrl = openUrl;
+
+  if (previewUrl) {
+    lbFrame.src = previewUrl;
+    lbFrame.classList.remove('hidden');
+    lbImg.src = '';
+    lbImg.classList.add('hidden');
+  } else {
+    lbImg.src = getFileUrlAt(entry, currentLightboxPhotoIndex) || getPrimaryFileUrl(entry);
+    lbImg.classList.remove('hidden');
+    lbFrame.src = '';
+    lbFrame.classList.add('hidden');
+  }
+
+  const galleryBar = document.getElementById('lb-gallery-bar');
+  const galleryCount = document.getElementById('lb-gallery-count');
+  const thumbStrip = document.getElementById('lb-thumb-strip');
+  const prevBtn = document.getElementById('lb-prev');
+  const nextBtn = document.getElementById('lb-next');
+
+  const multi = count > 1;
+  galleryBar.classList.toggle('hidden', !multi);
+  prevBtn.classList.toggle('hidden', !multi);
+  nextBtn.classList.toggle('hidden', !multi);
+
+  if (multi) {
+    galleryCount.textContent = `Photo ${currentLightboxPhotoIndex + 1} of ${count}`;
+    thumbStrip.innerHTML = Array.from({ length: count }, (_, index) => `
+      <button class="lb-thumb-btn ${index === currentLightboxPhotoIndex ? 'active' : ''}" onclick="event.stopPropagation();jumpToLightboxPhoto(${index})">${index + 1}</button>
+    `).join('');
+  } else {
+    galleryCount.textContent = '';
+    thumbStrip.innerHTML = '';
+  }
+}
+function jumpToLightboxPhoto(index) {
+  currentLightboxPhotoIndex = index;
+  renderLightboxGallery();
+}
+function changeLightboxPhoto(delta) {
+  const entry = currentLightboxEntry;
+  const count = entry ? getFileCount(entry) : 0;
+  if (!entry || count <= 1) return;
+  currentLightboxPhotoIndex = (currentLightboxPhotoIndex + delta + count) % count;
+  renderLightboxGallery();
 }
 function closeLightbox() {
   document.getElementById('lightbox').classList.remove('open');
@@ -1998,8 +2291,13 @@ function closeLightbox() {
   document.getElementById('lb-frame').src = '';
   document.getElementById('lb-frame').classList.add('hidden');
   document.getElementById('lb-img').src = '';
+  document.getElementById('lb-gallery-bar').classList.add('hidden');
+  document.getElementById('lb-thumb-strip').innerHTML = '';
+  document.getElementById('lb-prev').classList.add('hidden');
+  document.getElementById('lb-next').classList.add('hidden');
   currentLightboxEntry = null;
   currentLightboxOpenUrl = '';
+  currentLightboxPhotoIndex = 0;
 }
 function closeLB(e) { if(e.target===document.getElementById('lightbox')) closeLightbox(); }
 function copyUrl() { navigator.clipboard.writeText(currentLightboxOpenUrl || document.getElementById('lb-img').src).then(()=>alert('URL copied!')).catch(()=>alert('Could not copy the URL on this browser.')); }
