@@ -726,8 +726,8 @@ button,input,select,textarea{font-family:var(--font-b)}
 <script>
 // ── CONFIG ────────────────────────────────────────────────────
 const CREDS = { user:'admin', pass:'fra2026' };
-const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzLBMbebhov2bHQvfsZLTL1FzNRYC0KLqXEjBZlicPux73mYpAZ-tWdtgtaFBH8toY/exec';
-const SCRIPT_URL_STORAGE_KEY = 'fra_script_url_v7';
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQrsv6wOLrKDEB5g4brU2S2b6dW4vpFO8npjNRTdJfhOwSqOP8yPu_YSuDtw5dFeDy/exec';
+const SCRIPT_URL_STORAGE_KEY = 'fra_script_url_v8';
 const YEARS = ['2026','2027','2028','2029','2030'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const LEVELS = ['Level 1','Level 2','Level 3','Level 4','Level 5','Level 6','Level 7','Level 8'];
@@ -764,6 +764,8 @@ let classicType = '';
 let classicSelectedFiles = [];
 let classicPreviewUrls = [];
 let currentLightboxPhotoIndex = 0;
+const imageDataUrlCache = new Map();
+const imageDataUrlPromiseCache = new Map();
 
 // ── HELPERS ───────────────────────────────────────────────────
 function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -1626,10 +1628,51 @@ function getPrimaryFileId(entry) {
 }
 
 function getPrimaryFileUrl(entry) {
-  const directUrl = Array.isArray(entry?.fileUrls) && entry.fileUrls[0] ? String(entry.fileUrls[0]).trim() : '';
-  if (directUrl) return directUrl;
   const fileId = getPrimaryFileId(entry);
-  return fileId ? `https://drive.google.com/uc?export=view&id=${encodeURIComponent(fileId)}` : '';
+  return fileId ? buildFileDataUrl(fileId) : '';
+}
+
+function buildFileDataUrl(fileId) {
+  return `${SCRIPT_URL}?action=file_data&fileId=${encodeURIComponent(fileId)}`;
+}
+
+async function fetchImageDataUrl(fileId) {
+  if (!fileId) throw new Error('Missing fileId');
+  if (imageDataUrlCache.has(fileId)) return imageDataUrlCache.get(fileId);
+  if (imageDataUrlPromiseCache.has(fileId)) return imageDataUrlPromiseCache.get(fileId);
+
+  const task = (async () => {
+    const res = await fetch(buildFileDataUrl(fileId), { cache: 'force-cache' });
+    if (!res.ok) throw new Error(`Image request failed (${res.status})`);
+    const data = await res.json();
+    if (data?.error) throw new Error(data.error);
+    if (!data?.data) throw new Error('Image data not returned');
+    const dataUrl = `data:${data.mimeType || 'application/octet-stream'};base64,${data.data}`;
+    imageDataUrlCache.set(fileId, dataUrl);
+    imageDataUrlPromiseCache.delete(fileId);
+    return dataUrl;
+  })().catch(err => {
+    imageDataUrlPromiseCache.delete(fileId);
+    throw err;
+  });
+
+  imageDataUrlPromiseCache.set(fileId, task);
+  return task;
+}
+
+async function hydrateImageElement(fileId, imgEl, placeholderEl) {
+  if (!fileId || !imgEl) return;
+  try {
+    const dataUrl = await fetchImageDataUrl(fileId);
+    if (!imgEl.isConnected) return;
+    imgEl.src = dataUrl;
+    imgEl.classList.remove('hidden');
+    if (placeholderEl && placeholderEl.isConnected) placeholderEl.classList.add('hidden');
+  } catch (err) {
+    if (placeholderEl && placeholderEl.isConnected) {
+      placeholderEl.innerHTML = `<div class="student-preview-empty">Image could not be loaded.</div>`;
+    }
+  }
 }
 
 function getPrimaryPreviewEmbedUrl(entry) {
@@ -1652,10 +1695,8 @@ function getFileIdAt(entry, index) {
   return match ? decodeURIComponent(match[1]) : '';
 }
 function getFileUrlAt(entry, index) {
-  const url = Array.isArray(entry?.fileUrls) && entry.fileUrls[index] ? String(entry.fileUrls[index]).trim() : '';
-  if (url) return url;
   const fileId = getFileIdAt(entry, index);
-  return fileId ? `https://drive.google.com/uc?export=view&id=${encodeURIComponent(fileId)}` : '';
+  return fileId ? buildFileDataUrl(fileId) : '';
 }
 function getPreviewEmbedUrlAt(entry, index) {
   const fileId = getFileIdAt(entry, index);
@@ -2186,9 +2227,9 @@ function renderGallery(list) {
 
   grid.innerHTML = list.map((e, idx) => {
     const fileCount = getFileCount(e);
-    const previewUrl = getPrimaryFileUrl(e);
-    const imgHtml = previewUrl
-      ? `<img class="photo-card-frame" src="${esc(previewUrl)}" alt="${esc(e.name || e.activity || e.school || e.type || 'Photo preview')}" loading="lazy" referrerpolicy="no-referrer">`
+    const primaryFileId = getPrimaryFileId(e);
+    const imgHtml = primaryFileId
+      ? `<div class="photo-card-placeholder" id="photo-card-ph-${idx}"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#b8cce8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div><img class="photo-card-frame hidden" id="photo-card-img-${idx}" alt="${esc(e.name || e.activity || e.school || e.type || 'Photo preview')}" loading="lazy" referrerpolicy="no-referrer">`
       : `<div class="photo-card-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#b8cce8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>`;
 
     const tags = [
@@ -2221,6 +2262,16 @@ function renderGallery(list) {
       </div>
     </div>`;
   }).join('');
+
+  list.forEach((entry, idx) => {
+    const fileId = getPrimaryFileId(entry);
+    if (!fileId) return;
+    hydrateImageElement(
+      fileId,
+      document.getElementById(`photo-card-img-${idx}`),
+      document.getElementById(`photo-card-ph-${idx}`)
+    );
+  });
 }
 
 // ── LIGHTBOX ──────────────────────────────────────────────────
@@ -2256,20 +2307,29 @@ function renderLightboxGallery() {
 
   const lbImg = document.getElementById('lb-img');
   const lbFrame = document.getElementById('lb-frame');
-  const previewUrl = getFileUrlAt(entry, currentLightboxPhotoIndex) || getPrimaryFileUrl(entry);
+  const targetFileId = getFileIdAt(entry, currentLightboxPhotoIndex) || getPrimaryFileId(entry);
   const openUrl = getOpenUrlAt(entry, currentLightboxPhotoIndex) || getPrimaryOpenUrl(entry);
   currentLightboxOpenUrl = openUrl;
 
-  if (previewUrl) {
-    lbImg.src = previewUrl;
-    lbImg.classList.remove('hidden');
-    lbFrame.src = '';
-    lbFrame.classList.add('hidden');
+  lbFrame.src = '';
+  lbFrame.classList.add('hidden');
+  lbImg.src = '';
+  lbImg.classList.add('hidden');
+
+  if (targetFileId) {
+    const expectedEntryId = entry.id;
+    const expectedIndex = currentLightboxPhotoIndex;
+    fetchImageDataUrl(targetFileId).then(dataUrl => {
+      if (!currentLightboxEntry || currentLightboxEntry.id !== expectedEntryId || currentLightboxPhotoIndex !== expectedIndex) return;
+      lbImg.src = dataUrl;
+      lbImg.classList.remove('hidden');
+    }).catch(() => {
+      if (!currentLightboxEntry || currentLightboxEntry.id !== expectedEntryId || currentLightboxPhotoIndex !== expectedIndex) return;
+      lbImg.src = '';
+      lbImg.classList.remove('hidden');
+    });
   } else {
-    lbImg.src = '';
     lbImg.classList.remove('hidden');
-    lbFrame.src = '';
-    lbFrame.classList.add('hidden');
   }
 
   const galleryBar = document.getElementById('lb-gallery-bar');
