@@ -98,7 +98,7 @@ button,input,select,textarea{font-family:var(--font-b)}
 .photo-card-img-wrap{position:relative;overflow:hidden;background:linear-gradient(135deg,var(--brand-xpale),#f8fbff);display:flex;align-items:center;justify-content:center}
 .photo-card-img{width:100%;aspect-ratio:4/3;object-fit:contain;display:block;transition:transform 0.4s ease;background:transparent;padding:10px}
 .photo-card:hover .photo-card-img{transform:scale(1.04)}
-.photo-card-frame{width:100%;aspect-ratio:4/3;border:0;display:block;background:transparent;pointer-events:none}
+.photo-card-frame{width:100%;aspect-ratio:4/3;border:0;display:block;background:transparent;pointer-events:none;object-fit:cover}
 .photo-card-placeholder{width:100%;aspect-ratio:4/3;background:linear-gradient(135deg,var(--brand-xpale),var(--brand-pale));display:flex;align-items:center;justify-content:center}
 .photo-card-type-badge{position:absolute;top:10px;left:10px;background:var(--brand);color:#fff;font-family:var(--font-m);font-size:9px;letter-spacing:1px;padding:3px 8px;border-radius:4px;font-weight:500}
 .photo-card-edit-btn{position:absolute;top:10px;right:10px;background:rgba(255,255,255,0.92);color:var(--brand);border:none;width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;opacity:0;transition:opacity var(--t);box-shadow:var(--sh)}
@@ -726,8 +726,8 @@ button,input,select,textarea{font-family:var(--font-b)}
 <script>
 // ── CONFIG ────────────────────────────────────────────────────
 const CREDS = { user:'admin', pass:'fra2026' };
-const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwJvYxRowbua4J04gh4TtLlG5Uu2-O2cX57hr8nBjYG8RTq8Pnx8WykhMup5psI9r88/exec';
-const SCRIPT_URL_STORAGE_KEY = 'fra_script_url_v6';
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzLBMbebhov2bHQvfsZLTL1FzNRYC0KLqXEjBZlicPux73mYpAZ-tWdtgtaFBH8toY/exec';
+const SCRIPT_URL_STORAGE_KEY = 'fra_script_url_v7';
 const YEARS = ['2026','2027','2028','2029','2030'];
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const LEVELS = ['Level 1','Level 2','Level 3','Level 4','Level 5','Level 6','Level 7','Level 8'];
@@ -2167,9 +2167,9 @@ function renderGallery(list) {
 
   grid.innerHTML = list.map((e, idx) => {
     const fileCount = getFileCount(e);
-    const previewUrl = getPrimaryPreviewEmbedUrl(e);
+    const previewUrl = getPrimaryFileUrl(e);
     const imgHtml = previewUrl
-      ? `<iframe class="photo-card-frame" src="${esc(previewUrl)}" title="${esc(e.name || e.activity || e.school || e.type || 'Photo preview')}" loading="lazy"></iframe>`
+      ? `<img class="photo-card-frame" src="${esc(previewUrl)}" alt="${esc(e.name || e.activity || e.school || e.type || 'Photo preview')}" loading="lazy" referrerpolicy="no-referrer">`
       : `<div class="photo-card-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#b8cce8" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>`;
 
     const tags = [
@@ -2237,17 +2237,17 @@ function renderLightboxGallery() {
 
   const lbImg = document.getElementById('lb-img');
   const lbFrame = document.getElementById('lb-frame');
-  const previewUrl = getPreviewEmbedUrlAt(entry, currentLightboxPhotoIndex) || getPrimaryPreviewEmbedUrl(entry);
+  const previewUrl = getFileUrlAt(entry, currentLightboxPhotoIndex) || getPrimaryFileUrl(entry);
   const openUrl = getOpenUrlAt(entry, currentLightboxPhotoIndex) || getPrimaryOpenUrl(entry);
   currentLightboxOpenUrl = openUrl;
 
   if (previewUrl) {
-    lbFrame.src = previewUrl;
-    lbFrame.classList.remove('hidden');
-    lbImg.src = '';
-    lbImg.classList.add('hidden');
+    lbImg.src = previewUrl;
+    lbImg.classList.remove('hidden');
+    lbFrame.src = '';
+    lbFrame.classList.add('hidden');
   } else {
-    lbImg.src = getFileUrlAt(entry, currentLightboxPhotoIndex) || getPrimaryFileUrl(entry);
+    lbImg.src = '';
     lbImg.classList.remove('hidden');
     lbFrame.src = '';
     lbFrame.classList.add('hidden');
